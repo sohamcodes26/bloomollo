@@ -119,5 +119,5 @@ export const products: Product[] = [
   },
 ]
 
-export const brand = 'Small Hours'
-export const homeDescription = 'Six focused Chrome extensions for debugging, saving drafts, capturing pages, drawing on the web, and controlling video and audio. Explore the Small Hours collection.'
+export const brand = 'Bloomollo'
+export const homeDescription = 'Six focused Chrome extensions for debugging, saving drafts, capturing pages, drawing on the web, and controlling video and audio. Explore the Bloomollo collection.'

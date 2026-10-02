@@ -5,7 +5,9 @@ import type { Product } from './data'
 import HeroAtmosphere from './components/HeroAtmosphere'
 import CyberneticEyes from './components/CyberneticEyes'
 import ParticleGlobe from './components/ParticleGlobe'
+import ThemeToggle from './components/ThemeToggle'
 import './App.css'
+import './theme.css'
 
 function Arrow({ diagonal = false }: { diagonal?: boolean }) {
   return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden="true">{diagonal ? <path d="M6 18 18 6M6 6h12v12" /> : <path d="M4 12h15m-6-6 6 6-6 6" />}</svg>
@@ -47,6 +49,7 @@ function Header({ home }: { home: boolean }) {
   return <header className="site-header">
     <a className="brand" href="/" aria-label={`${brand} home`}><Mark /><span>{brand}<span className="brand-period">.</span></span></a>
     <nav className="desktop-nav" aria-label="Main navigation"><a href={home ? '#extensions' : '/#extensions'}>The collection <span>06</span></a><a href={home ? '#philosophy' : '/#philosophy'}>Our approach</a><a href={home ? '#faq' : '/#faq'}>Questions</a></nav>
+    <ThemeToggle />
     <a href={home ? '#extensions' : '/#extensions'} className="button nav-cta">Explore extensions <span className="button-icon"><Arrow /></span></a>
     <button className="menu-toggle" aria-expanded={open} aria-controls="mobile-menu" onClick={() => setOpen(!open)} aria-label={open ? 'Close navigation' : 'Open navigation'}><span /><span className={open ? 'open' : ''} /></button>
     <nav id="mobile-menu" aria-label="Mobile navigation" className={`mobile-nav ${open ? 'expanded' : ''}`} inert={!open}><a onClick={() => setOpen(false)} href="/#extensions">The collection <Arrow /></a><a onClick={() => setOpen(false)} href="/#philosophy">Our approach <Arrow /></a><a onClick={() => setOpen(false)} href={home ? '#faq' : '/#faq'}>Questions <Arrow /></a></nav>
@@ -91,7 +94,7 @@ function Home() {
     <section className="collection section-space" id="extensions"><Reveal><div className="section-kicker"><span>01 — THE COLLECTION</span><span>SMALL TOOLS, REAL DIFFERENCES</span></div><div className="section-heading"><h2>Browse Chrome Extensions</h2></div><div className="filter-row" role="group" aria-label="Filter extensions by category">{categories.map(category => <button key={category} aria-pressed={filter === category} className={filter === category ? 'active' : ''} onClick={() => setFilter(category)}>{category}{category === 'All tools' && <span>06</span>}</button>)}<span className="filter-count" aria-live="polite">{String(filtered.length).padStart(2, '0')} TOOLS</span></div></Reveal><div className="product-grid">{filtered.map(p => <ProductCard key={p.slug} product={p} index={products.indexOf(p)} />)}</div></section>
     <section className="philosophy section-space" id="philosophy"><Reveal><div className="section-kicker"><span>02 — A SIMPLE PHILOSOPHY</span><span>LESS, BUT USEFUL</span></div><div className="philosophy-intro"><span className="large-asterisk"><Mark /></span><h2>The browser is already<br />your workspace.<br /><span>Let’s make it feel like yours.</span></h2></div></Reveal><Reveal><div className="principles"><article><span>01 / FOCUSED</span><h3>One small problem.<br />One good tool.</h3><p>No sprawling dashboards. Each extension has a clear purpose and stays close to it.</p></article><article><span>02 / CONSIDERED</span><h3>Your work stays<br />in your hands.</h3><p>Local processing in the current builds. Clear permissions and honest limitations—not vague promises.</p></article><article><span>03 / EVERYDAY</span><h3>A little less effort.<br />Every single time.</h3><p>Save a few clicks, keep a thought, explain a detail. Small improvements are still improvements.</p></article></div></Reveal></section>
     <section className="globe-section"><div className="globe-heading"><span className="eyebrow">SAME WEB. A LITTLE MORE POSSIBILITY.</span><h2>Make yourself at home.</h2></div><ParticleGlobe /></section>
-    <section className="faq-section section-space" id="faq"><Reveal className="faq-layout"><div><span className="section-kicker">03 — GOOD QUESTIONS</span><h2>A few things<br /><span>worth knowing.</span></h2><p>Small tools should come with<br />straight answers.</p></div><FaqList items={generalFaqs} /></Reveal></section>
+    <section className="faq-section section-space" id="faq"><Reveal className="faq-layout"><div><h2>FAQs</h2></div><FaqList items={generalFaqs} /></Reveal></section>
     <section className="closing"><Reveal><span className="eyebrow">YOUR NEXT SMALL UPGRADE</span><h2>Less getting in the way.<br /><span>More getting on with it.</span></h2><a href="#extensions" className="button light">Explore the collection <span className="button-icon"><Arrow /></span></a></Reveal><span className="closing-star" aria-hidden="true"><Mark /></span></section>
   </>
 }

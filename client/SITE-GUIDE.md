@@ -1,6 +1,6 @@
-# Small Hours — extension collection
+# Bloomollo — extension collection
 
-Small Hours is an editable working brand, not a claim of an established publisher.
+Bloomollo is an editable working brand, not a claim of an established publisher.
 The site is built in the existing React + TypeScript + Vite setup. No additional
 runtime libraries were installed. The six extension folders were not modified.
 

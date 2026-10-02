@@ -17,6 +17,14 @@ export default function ParticleGlobe() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let particleColor = '', ringColor = ''
+    const updateColors = () => {
+      const style = getComputedStyle(document.documentElement)
+      particleColor = style.getPropertyValue('--globe-rgb').trim() || '235,237,228'
+      ringColor = style.getPropertyValue('--globe-ring').trim() || '225,230,206'
+    }
+    updateColors()
+    window.addEventListener('themechange', updateColors)
     let width = 0, height = 0, rotation = 0, tilt = -0.13, frame = 0, lastTime = 0
     let visible = true, dragging = false, lastX = 0, lastY = 0
     let velocityX = 0, velocityY = 0, lastMoveTime = 0
@@ -75,13 +83,13 @@ export default function ParticleGlobe() {
           p.dx += ((dx / (distance || 1)) * force - p.dx) * 0.1 * delta
           p.dy += ((dy / (distance || 1)) * force - p.dy) * 0.1 * delta
           const alpha = 0.14 + ((depth + 1) / 2) * 0.76
-          ctx.fillStyle = `rgba(235,237,228,${alpha})`
+          ctx.fillStyle = `rgba(${particleColor},${alpha})`
           ctx.beginPath()
           ctx.arc(px + p.dx, py + p.dy, (0.65 + ((depth + 1) / 2) * 1.05) * perspective, 0, Math.PI * 2)
           ctx.fill()
         }
         if (pointer.x > 0 && !reducedMotion.matches) {
-          ctx.strokeStyle = 'rgba(225,230,206,0.3)'; ctx.lineWidth = 0.7
+          ctx.strokeStyle = `rgba(${ringColor},0.3)`; ctx.lineWidth = 0.7
           ctx.beginPath(); ctx.arc(pointer.x, pointer.y, 34, 0, Math.PI * 2); ctx.stroke()
         }
       }
@@ -141,6 +149,7 @@ export default function ParticleGlobe() {
     resize(); frame = requestAnimationFrame(draw)
     return () => {
       cancelAnimationFrame(frame); observer.disconnect(); resizeObserver.disconnect()
+      window.removeEventListener('themechange', updateColors)
       canvas.removeEventListener('pointermove', move); canvas.removeEventListener('pointerdown', down)
       canvas.removeEventListener('pointerup', up); canvas.removeEventListener('pointercancel', up)
       canvas.removeEventListener('lostpointercapture', up)
