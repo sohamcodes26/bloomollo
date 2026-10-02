@@ -15,8 +15,9 @@ export default function CyberneticEyes() {
 
   useEffect(() => {
     const canvas = canvasRef.current
-    const context = canvas?.getContext('2d', { alpha: false })
+    const context = canvas?.getContext('2d', { alpha: true })
     if (!canvas || !context) return
+    delete canvas.dataset.ready
     let disposed = false
     let raf = 0
     let pointer: { x: number; y: number } | null = null
@@ -63,7 +64,6 @@ export default function CyberneticEyes() {
     // Nothing is rendered or swapped until every source image is decoded.
     Promise.all(images.map(image => image.decode())).then(() => {
       if (disposed) return
-      canvas.dataset.ready = 'true'
       updateBounds()
       const render = (time: number) => {
         const dt = previousTime ? Math.min(time - previousTime, 50) : 16.67
@@ -95,6 +95,7 @@ export default function CyberneticEyes() {
           context.drawImage(images[frame], 30, 210, 1220, 360, 0, 0, 1220, 360)
           drawn = frame
           canvas.dataset.frame = String(frame)
+          canvas.dataset.ready = 'true'
         }
         raf = requestAnimationFrame(render)
       }
