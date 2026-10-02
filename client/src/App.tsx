@@ -5,7 +5,9 @@ import type { Product } from './data'
 import HeroAtmosphere from './components/HeroAtmosphere'
 import CyberneticEyes from './components/CyberneticEyes'
 import ParticleGlobe from './components/ParticleGlobe'
+import ThemeToggle from './components/ThemeToggle'
 import './App.css'
+import './theme.css'
 
 function Arrow({ diagonal = false }: { diagonal?: boolean }) {
   return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden="true">{diagonal ? <path d="M6 18 18 6M6 6h12v12" /> : <path d="M4 12h15m-6-6 6 6-6 6" />}</svg>
@@ -47,6 +49,7 @@ function Header({ home }: { home: boolean }) {
   return <header className="site-header">
     <a className="brand" href="/" aria-label={`${brand} home`}><Mark /><span>{brand}<span className="brand-period">.</span></span></a>
     <nav className="desktop-nav" aria-label="Main navigation"><a href={home ? '#extensions' : '/#extensions'}>The collection <span>06</span></a><a href={home ? '#philosophy' : '/#philosophy'}>Our approach</a><a href={home ? '#faq' : '/#faq'}>Questions</a></nav>
+    <ThemeToggle />
     <a href={home ? '#extensions' : '/#extensions'} className="button nav-cta">Explore extensions <span className="button-icon"><Arrow /></span></a>
     <button className="menu-toggle" aria-expanded={open} aria-controls="mobile-menu" onClick={() => setOpen(!open)} aria-label={open ? 'Close navigation' : 'Open navigation'}><span /><span className={open ? 'open' : ''} /></button>
     <nav id="mobile-menu" aria-label="Mobile navigation" className={`mobile-nav ${open ? 'expanded' : ''}`} inert={!open}><a onClick={() => setOpen(false)} href="/#extensions">The collection <Arrow /></a><a onClick={() => setOpen(false)} href="/#philosophy">Our approach <Arrow /></a><a onClick={() => setOpen(false)} href={home ? '#faq' : '/#faq'}>Questions <Arrow /></a></nav>

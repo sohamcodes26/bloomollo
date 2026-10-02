@@ -20,13 +20,13 @@ const version = hash.digest('hex').slice(0, 16)
 const urls = files.filter(file => /\.(?:js|css|png|jpg|jpeg|webp|avif|svg|woff2|ico)$/i.test(file))
   .map(file => '/' + path.relative(dist, file).split(path.sep).join('/'))
 await writeFile(path.join(dist, 'sw.js'), `
-const CACHE = 'small-hours-assets-${version}';
+const CACHE = 'bloomollo-assets-${version}';
 const ASSETS = ${JSON.stringify(urls)};
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));
 });
 self.addEventListener('activate', event => {
-  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('small-hours-assets-') && key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim()));
+  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('bloomollo-assets-') && key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim()));
 });
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
