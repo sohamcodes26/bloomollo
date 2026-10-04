@@ -10,7 +10,7 @@
 .pdf-title-badge { background:#164eaa; color:#fff; padding:5px 9px 6px; border-radius:5px; letter-spacing:-.7px; box-shadow:3px 3px 0 #c6d8f3; }
 .pdf-toolbar .pdf-local { margin-left:auto; }
 .pdf-tool .pdf-workspace { max-width:none; width:100%; flex:1; min-height:0; margin:16px 0 0; align-items:stretch; gap:16px; grid-template-columns:minmax(0,1fr) 368px; }
-.pdf-tool .pdf-image-panel { overflow:auto; overscroll-behavior:contain; padding:18px; }
+.pdf-tool .pdf-image-panel { overflow:auto; overscroll-behavior:auto; padding:18px; }
 .pdf-tool .pdf-settings { position:static; display:flex; flex-direction:column; min-height:0; padding:18px; overflow:hidden; }
 .pdf-options-scroll { flex:1; min-height:0; overflow:auto; padding:3px; }
 .pdf-tool .pdf-quick-settings { display:grid; grid-template-columns:1fr 1fr; column-gap:12px; }

@@ -7,6 +7,8 @@ import CyberneticEyes from './components/CyberneticEyes'
 import ParticleGlobe from './components/ParticleGlobe'
 import ThemeToggle from './components/ThemeToggle'
 import ImageToPdfPage from './converters/image-to-pdf/ImageToPdfPage'
+import BrandWordmark from './components/BrandWordmark'
+import LegalFooter from './components/LegalFooter'
 import './App.css'
 import './theme.css'
 
@@ -48,7 +50,7 @@ function Header({ home }: { home: boolean }) {
     return () => document.removeEventListener('keydown', escape)
   }, [])
   return <header className="site-header">
-    <a className="brand" href="/" aria-label={`${brand} home`}><Mark /><span>{brand}<span className="brand-period">.</span></span></a>
+    <a className="brand" href="/" aria-label={`${brand} home`}><Mark /><BrandWordmark /></a>
     <nav className="desktop-nav" aria-label="Main navigation"><a href={home ? '#extensions' : '/#extensions'}>The collection <span>06</span></a><a href={home ? '#philosophy' : '/#philosophy'}>Our approach</a><a href={home ? '#faq' : '/#faq'}>Questions</a></nav>
     <ThemeToggle />
     <a href={home ? '#extensions' : '/#extensions'} className="button nav-cta">Explore extensions <span className="button-icon"><Arrow /></span></a>
@@ -57,7 +59,7 @@ function Header({ home }: { home: boolean }) {
   </header>
 }
 function Footer() {
-  return <footer className="site-footer"><div className="footer-top"><a className="brand" href="/"><Mark /><span>{brand}.</span></a><p>Small tools. A little more possibility.</p><a className="text-link" href="/#extensions">Back to the collection <Arrow /></a></div><div className="footer-bottom"><span>© 2026 {brand}. An independent collection.</span><a href="/privacy/">Privacy & transparency</a><span>Made for the everyday web <span className="tiny-star"><Mark /></span></span></div></footer>
+  return <div className="site-footer"><div className="footer-top"><a className="brand" href="/" aria-label={`${brand} home`}><Mark /><BrandWordmark /></a><p>Small tools. A little more possibility.</p><a className="text-link" href="/#extensions">Back to the collection <Arrow /></a></div><LegalFooter /></div>
 }
 function ProductPreview({ product }: { product: Product }) {
   const slug = product.slug
@@ -117,10 +119,13 @@ function ProductPage({ product }: { product: Product }) {
 function PrivacyPage() {
   return <section className="legal section-space"><a className="back-link" href="/">← Back home</a><div className="eyebrow">PRIVACY & TRANSPARENCY</div><h1>Clear by design.</h1><p>This collection website has no accounts, advertising trackers, analytics integration, or submission forms. Interactive previews run in your browser and do not access the installed extensions.</p><h2>The website</h2><p>Fonts and site assets are served locally. Your hosting provider may process standard request logs, such as IP addresses, independently of this frontend. Review its policy when the site is deployed.</p><h2>The extensions</h2><p>The current extension builds process their core data locally. They have different permissions, retention behavior, and compatibility boundaries. Read the privacy notes on each product page and the privacy document shipped with each extension before use.</p><h2>You stay in control</h2><p>Downloading captures, exporting drafts, or copying debugging reports gives you a file or clipboard content on your device. Sharing that content with another service is a separate action under that service’s terms. Sensitive-data filtering is not a guarantee.</p><h2>Publication status</h2><p>Chrome Web Store links are not yet configured. Installation buttons remain disabled until the corresponding published URL is added. Publisher contact details and final extension privacy policies must be configured before store publication.</p><p className="legal-date">Last updated: October 1, 2026.</p></section>
 }
+function TermsPage() {
+  return <section className="legal section-space"><a className="back-link" href="/">← Back home</a><div className="eyebrow">TERMS OF SERVICE</div><h1>Using Bloomollo.</h1><p>These terms describe use of this website and its browser-based tools. By using them, you agree to these terms. If you do not agree, do not use the tools.</p><h2>Your files and content</h2><p>You keep ownership of your content. Only process files you have permission to use. The Image to PDF tool processes images on your device; save your downloaded results and keep copies of important originals. Reloading or leaving the page clears the working session.</p><h2>Responsible use</h2><p>Do not use this website for unlawful activity, interfere with its operation, or attempt unauthorized access. You are responsible for checking that generated files are complete and suitable for your intended use.</p><h2>Availability and limitations</h2><p>Tools may change or become unavailable. Browser compatibility, memory limits, and file formats can affect results. We do not promise uninterrupted service or that every file will convert successfully. Nothing in these terms limits rights that cannot be limited under applicable law.</p><h2>Extensions and other services</h2><p>Extensions have their own permissions and product-specific notices. External services, including the Chrome Web Store, operate under their own terms. Review those notices before installation or sharing any content.</p><h2>Privacy and updates</h2><p>Read our <a href="/privacy/">Privacy Policy</a> for information about data handling. Changes to these terms will be published on this page. This development website has no configured publisher contact; publisher identity and contact information must be added before public launch.</p><p className="legal-date">Last updated: October 4, 2026.</p></section>
+}
 export default function App({ pathname = '/' }: { pathname?: string }) {
   const normalized = pathname.replace(/\/+$/, '') || '/'
   const product = products.find(p => normalized === `/extensions/${p.slug}`)
   const home = normalized === '/'
-  if (normalized === '/tools/image-to-pdf') return <><a href="#main-content" className="skip-link">Skip to content</a><main id="main-content"><ImageToPdfPage /></main></>
-  return <><a href="#main-content" className="skip-link">Skip to content</a><div className="site-frame"><Header home={home} /><main id="main-content">{home ? <Home /> : normalized === '/tools/image-to-pdf' ? <ImageToPdfPage /> : product ? <ProductPage product={product} /> : normalized === '/privacy' ? <PrivacyPage /> : <section className="not-found section-space"><span className="eyebrow">404 — NOT IN THE COLLECTION</span><h1>A little off the path.</h1><p>That page isn’t here. The collection is just one click away.</p><a className="button light" href="/">Back to the collection <Arrow /></a></section>}</main><Footer /></div></>
+  if (normalized === '/tools/image-to-pdf') return <><a href="#main-content" className="skip-link">Skip to content</a><main id="main-content"><ImageToPdfPage /></main><LegalFooter variant="tool" /></>
+  return <><a href="#main-content" className="skip-link">Skip to content</a><div className="site-frame"><Header home={home} /><main id="main-content">{home ? <Home /> : product ? <ProductPage product={product} /> : normalized === '/privacy' ? <PrivacyPage /> : normalized === '/terms' ? <TermsPage /> : <section className="not-found section-space"><span className="eyebrow">404 — NOT IN THE COLLECTION</span><h1>A little off the path.</h1><p>That page isn’t here. The collection is just one click away.</p><a className="button light" href="/">Back to the collection <Arrow /></a></section>}</main><Footer /></div></>
 }

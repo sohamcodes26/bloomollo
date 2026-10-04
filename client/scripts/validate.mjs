@@ -12,6 +12,16 @@ assert.match(converter, /Image to PDF/)
 assert.match(converter, /Files stay on your device/)
 assert.match(converter, /PDF settings/)
 assert.equal((converter.match(/<h1\b/g) || []).length, 1)
+assert.match(converter, /legal-footer--tool/)
+assert.match(converter, /brand-trademark/)
+for (const html of [home, converter]) {
+  assert.match(html, /href="\/terms\/"/)
+  assert.match(html, /href="\/privacy\/"/)
+  assert.match(html, /All rights reserved/)
+}
+const terms = await readFile(new URL('../dist/terms/index.html', import.meta.url), 'utf8')
+assert.match(terms, /Terms of Service/)
+assert.match(terms, /Using Bloomollo/)
 for (const slug of slugs) {
   const html = await readFile(new URL(`../dist/extensions/${slug}/index.html`, import.meta.url), 'utf8')
   assert.equal((html.match(/<h1\b/g) || []).length, 1, `${slug}: single h1`)

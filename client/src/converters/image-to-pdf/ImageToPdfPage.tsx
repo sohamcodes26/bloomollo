@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import WipeButton from '../../components/ui/WipeButton'
+import BrandWordmark from '../../components/BrandWordmark'
 import { checkImageDimensions, defaults, detectImage, MAX_BYTES, MAX_FILES, MAX_PIXELS, moveItem } from './model'
 import type { ImageItem, PdfSettings } from './model'
 import './image-to-pdf.css'
@@ -85,7 +86,7 @@ export default function ImageToPdfPage() {
   }
   return <div className="pdf-tool">
     <p className="sr-only" role="status" aria-live="polite">{announcement}</p>
-    <header className="pdf-toolbar"><a href="/" className="pdf-brand" aria-label="Bloomollo home"><svg className="pdf-brand-mark" width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="m16 2 12 7v14l-12 7L4 23V9L16 2Z" stroke="currentColor" strokeWidth="1.3" /><path d="m4 9 12 7 12-7M16 16v14m-6-17 12-7m-12 7v14" stroke="currentColor" strokeWidth="1.3" /></svg><span className="pdf-brand-name">Bloomollo<span>.</span></span></a><span className="pdf-toolbar-divider" aria-hidden="true" /><h1 className="pdf-tool-title">Image <span className="pdf-title-to">to</span> <span className="pdf-title-badge">PDF</span></h1><span className="pdf-local"><i /> Files stay on your device</span></header>
+    <header className="pdf-toolbar"><a href="/" className="pdf-brand" aria-label="Bloomollo home"><svg className="pdf-brand-mark" width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="m16 2 12 7v14l-12 7L4 23V9L16 2Z" stroke="currentColor" strokeWidth="1.3" /><path d="m4 9 12 7 12-7M16 16v14m-6-17 12-7m-12 7v14" stroke="currentColor" strokeWidth="1.3" /></svg><BrandWordmark className="pdf-brand-name" /></a><span className="pdf-toolbar-divider" aria-hidden="true" /><h1 className="pdf-tool-title">Image <span className="pdf-title-to">to</span> <span className="pdf-title-badge">PDF</span></h1><span className="pdf-local"><i /> Files stay on your device</span></header>
     <div className="pdf-workspace">
       <section className="pdf-image-panel" aria-label="Images to convert">
         <div className="pdf-panel-heading"><h2>{images.length ? `Images (${images.length})` : 'Images'}</h2>{images.length > 0 && <button className="pdf-text-button" disabled={locked} onClick={() => { images.forEach(image => { URL.revokeObjectURL(image.url); urls.current.delete(image.url) }); setImages([]); invalidate(); setErrors([]) }}>Clear all</button>}</div>
