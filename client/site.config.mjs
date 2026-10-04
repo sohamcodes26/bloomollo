@@ -1,0 +1,1 @@
+export const productionOrigin = 'https://bloomollo.dpdns.org'

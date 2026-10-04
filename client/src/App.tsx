@@ -7,6 +7,7 @@ import CyberneticEyes from './components/CyberneticEyes'
 import ParticleGlobe from './components/ParticleGlobe'
 import ThemeToggle from './components/ThemeToggle'
 import ImageToPdfPage from './converters/image-to-pdf/ImageToPdfPage'
+import ImageToPdfGuide from './converters/image-to-pdf/ImageToPdfGuide'
 import BrandWordmark from './components/BrandWordmark'
 import LegalFooter from './components/LegalFooter'
 import './App.css'
@@ -126,6 +127,6 @@ export default function App({ pathname = '/' }: { pathname?: string }) {
   const normalized = pathname.replace(/\/+$/, '') || '/'
   const product = products.find(p => normalized === `/extensions/${p.slug}`)
   const home = normalized === '/'
-  if (normalized === '/tools/image-to-pdf') return <><a href="#main-content" className="skip-link">Skip to content</a><main id="main-content"><ImageToPdfPage /></main><LegalFooter variant="tool" /></>
+  if (normalized === '/tools/image-to-pdf') return <><a href="#main-content" className="skip-link">Skip to content</a><main id="main-content"><ImageToPdfPage /><ImageToPdfGuide /></main><LegalFooter variant="tool" /></>
   return <><a href="#main-content" className="skip-link">Skip to content</a><div className="site-frame"><Header home={home} /><main id="main-content">{home ? <Home /> : product ? <ProductPage product={product} /> : normalized === '/privacy' ? <PrivacyPage /> : normalized === '/terms' ? <TermsPage /> : <section className="not-found section-space"><span className="eyebrow">404 — NOT IN THE COLLECTION</span><h1>A little off the path.</h1><p>That page isn’t here. The collection is just one click away.</p><a className="button light" href="/">Back to the collection <Arrow /></a></section>}</main><Footer /></div></>
 }

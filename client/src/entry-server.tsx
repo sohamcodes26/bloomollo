@@ -5,8 +5,8 @@ import { brand, homeDescription, products } from './data'
 export const routes = ['/', ...products.map(p => `/extensions/${p.slug}/`), '/tools/image-to-pdf/', '/privacy/', '/terms/', '/404/']
 export function render(pathname: string) {
   const product = products.find(p => pathname === `/extensions/${p.slug}/`)
-  const title = pathname === '/tools/image-to-pdf/' ? `Image to PDF — Convert images locally | ${brand}` : product ? `${product.name} — ${product.line} | ${brand}` : pathname === '/privacy/' ? `Privacy Policy | ${brand}` : pathname === '/terms/' ? `Terms of Service | ${brand}` : pathname === '/404/' ? `Page not found | ${brand}` : `${brand} — Small Chrome extensions. A better everyday.`
-  const description = pathname === '/tools/image-to-pdf/' ? 'Convert JPG, PNG, WebP and other supported images to PDF on your device. Reorder, rotate, choose page settings and download. No uploads or account.' : product ? product.description : homeDescription
+  const title = pathname === '/tools/image-to-pdf/' ? `Image to PDF & JPG to PDF Converter — Free | ${brand}` : product ? `${product.name} — ${product.line} | ${brand}` : pathname === '/privacy/' ? `Privacy Policy | ${brand}` : pathname === '/terms/' ? `Terms of Service | ${brand}` : pathname === '/404/' ? `Page not found | ${brand}` : `${brand} — Small Chrome extensions. A better everyday.`
+  const description = pathname === '/tools/image-to-pdf/' ? 'Convert JPG, PNG and WebP images to one PDF free, without uploading files. Reorder photos, adjust pages and download. No watermark or account.' : product ? product.description : homeDescription
   const schema = product ? {
     '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: product.name,
     description: product.line, applicationCategory: 'BrowserApplication', operatingSystem: 'Chrome',
