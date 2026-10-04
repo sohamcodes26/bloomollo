@@ -12,11 +12,30 @@ export default function ImageToPdfPage() {
   const [errors, setErrors] = useState<string[]>([]), [progress, setProgress] = useState(0)
   const [over, setOver] = useState(false)
   const [announcement, setAnnouncement] = useState('')
+  const [dragIndex, setDragIndex] = useState<number | null>(null), [dropIndex, setDropIndex] = useState<number | null>(null)
+  const dropTarget = useRef<number | null>(null)
+  const [dragPreview, setDragPreview] = useState<{ x: number; y: number; width: number } | null>(null)
+  const dragSlots = useRef<DOMRect[]>([])
+  const dragScroll = useRef(0)
+  const pendingDrag = useRef<{ timer: number; x: number; y: number } | null>(null)
+  const grid = useRef<HTMLOListElement>(null)
   const [mobile, setMobile] = useState(false), [drawerOpen, setDrawerOpen] = useState(false)
   const drawer = useRef<HTMLDivElement>(null), drawerTrigger = useRef<HTMLButtonElement>(null)
   const input = useRef<HTMLInputElement>(null), worker = useRef<Worker | null>(null)
   const urls = useRef(new Set<string>()), dragged = useRef<number | null>(null), importing = useRef(false), mounted = useRef(true)
   useEffect(() => { mounted.current = true; const pool = urls.current; return () => { mounted.current = false; worker.current?.terminate(); pool.forEach(url => URL.revokeObjectURL(url)); pool.clear() } }, [])
+  useEffect(() => {
+    const element = grid.current
+    const preventDragScroll = (event: TouchEvent) => {
+      if (dragged.current !== null && event.cancelable) event.preventDefault()
+    }
+    element?.addEventListener('touchmove', preventDragScroll, { passive: false })
+    return () => {
+      element?.removeEventListener('touchmove', preventDragScroll)
+      if (pendingDrag.current) window.clearTimeout(pendingDrag.current.timer)
+      pendingDrag.current = null
+    }
+  }, [images.length])
   useEffect(() => {
     const media = window.matchMedia('(max-width:700px)')
     const update = () => { setMobile(media.matches); setDrawerOpen(false) }
@@ -86,7 +105,31 @@ export default function ImageToPdfPage() {
     if (mounted.current) { setImages(previous => [...previous, ...accepted]); setErrors(problems); setLoading(false) }
     importing.current = false
   }
-  function reorder(from: number, to: number) { if (!locked && images[from] && to >= 0 && to < images.length && from !== to) { invalidate(); setImages(previous => moveItem(previous, from, to)); setAnnouncement(`Moved ${images[from].file.name} to page ${to + 1}.`) } }
+  function reorder(from: number, to: number) {
+    if (locked || !images[from] || to < 0 || to >= images.length || from === to) return
+    const positions = new Map(Array.from(grid.current?.children ?? []).map(card => [(card as HTMLElement).dataset.imageId, card.getBoundingClientRect()]))
+    invalidate(); setImages(previous => moveItem(previous, from, to)); setAnnouncement(`Moved ${images[from].file.name} to page ${to + 1}.`)
+    requestAnimationFrame(() => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+      Array.from(grid.current?.children ?? []).forEach(card => {
+        const before = positions.get((card as HTMLElement).dataset.imageId), after = card.getBoundingClientRect()
+        if (before) card.animate([{ transform: `translate(${before.left - after.left}px,${before.top - after.top}px)` }, { transform: 'translate(0,0)' }], { duration: 280, easing: 'cubic-bezier(.22,1,.36,1)' })
+      })
+    })
+  }
+  function beginDrag(index: number) {
+    dragSlots.current = Array.from(grid.current?.children ?? []).map(card => card.getBoundingClientRect())
+    dragScroll.current = grid.current?.closest('.pdf-image-panel')?.scrollTop ?? 0
+    dragged.current = index; dropTarget.current = index; setDragIndex(index); setDropIndex(index); setOver(false)
+  }
+  function targetDrag(index: number | null) { dropTarget.current = index; setDropIndex(index) }
+  function endDrag(commit = false) {
+    if (pendingDrag.current) window.clearTimeout(pendingDrag.current.timer)
+    pendingDrag.current = null
+    if (commit && dragged.current !== null && dropTarget.current !== null) reorder(dragged.current, dropTarget.current)
+    dragged.current = null; dropTarget.current = null; setDragIndex(null); setDropIndex(null)
+    setDragPreview(null)
+  }
   function change<K extends keyof PdfSettings>(key: K, value: PdfSettings[K]) { invalidate(); setSettings(previous => ({ ...previous, [key]: value })) }
   function remove(id: string) { invalidate(); const item = images.find(image => image.id === id); if (item) { URL.revokeObjectURL(item.url); urls.current.delete(item.url) }; setImages(previous => previous.filter(image => image.id !== id)) }
   function cancel() { worker.current?.terminate(); worker.current = null; setBusy(false); setProgress(0); setAnnouncement('Conversion stopped. Your images and settings are unchanged.') }
@@ -129,11 +172,41 @@ export default function ImageToPdfPage() {
           <WipeButton disabled={locked} onClick={() => input.current?.click()}>{loading ? 'Reading images…' : images.length ? '+ Add more images' : '+ Choose images'}</WipeButton>
           {!images.length && <small>JPG, PNG, WebP, GIF, BMP, AVIF<br />Up to 60 images · 25 MB per file · 150 MB total</small>}
         </div>
-        {images.length > 0 && <><p className="pdf-order-help">Drag to reorder, or use the arrow buttons. Numbers match PDF page order.</p><ol className="pdf-image-grid">{images.map((image, index) => <li key={image.id} draggable={!locked} onDragStart={event => { dragged.current = index; event.dataTransfer.effectAllowed = 'move'; event.dataTransfer.setData('text/plain', String(index)) }} onDragEnd={() => { dragged.current = null }} onDragOver={event => { if (dragged.current !== null) event.preventDefault() }} onDrop={event => { if (dragged.current !== null) { event.preventDefault(); event.stopPropagation(); reorder(dragged.current, index); dragged.current = null } }}>
-          <div className="pdf-thumb"><span className="pdf-page-number">{index + 1}</span><img src={image.url} alt={image.file.name} style={{ transform: `rotate(${image.rotation}deg)` }} /><button className="pdf-remove" disabled={locked} aria-label={`Remove ${image.file.name}`} onClick={() => remove(image.id)}>×</button></div>
+        {images.length > 0 && <><p className="pdf-order-help">Drag an image preview to reorder. Arrow buttons work too. Numbers match PDF page order.</p><ol ref={grid} className="pdf-image-grid">{images.map((image, index) => {
+          const active = dragIndex === index
+          const position = dragIndex !== null && dropIndex !== null ? (active ? dropIndex : dragIndex < dropIndex && index > dragIndex && index <= dropIndex ? index - 1 : dragIndex > dropIndex && index >= dropIndex && index < dragIndex ? index + 1 : index) : index
+          return <li key={image.id} data-image-id={image.id} data-index={index} style={{ order: position }} className={active ? 'is-dragging is-drop-target pdf-insertion-slot' : ''}>
+          <div className="pdf-thumb" onPointerDown={event => {
+            if (locked || event.button !== 0 || (event.target as HTMLElement).closest('button')) return
+            const element = event.currentTarget, pointerId = event.pointerId, x = event.clientX, y = event.clientY
+            const activate = () => {
+              pendingDrag.current = null
+              if (!mounted.current || !element.isConnected) return
+              element.setPointerCapture(pointerId); beginDrag(index)
+              setDragPreview({ x, y, width: element.getBoundingClientRect().width })
+            }
+            if (event.pointerType === 'touch') {
+              endDrag()
+              pendingDrag.current = { timer: window.setTimeout(activate, 220), x, y }
+            } else { event.preventDefault(); activate() }
+          }} onPointerMove={event => {
+            if (pendingDrag.current && Math.hypot(event.clientX - pendingDrag.current.x, event.clientY - pendingDrag.current.y) > 8) endDrag()
+            if (dragged.current === null || !event.currentTarget.hasPointerCapture(event.pointerId)) return
+            setDragPreview(previous => previous && ({ ...previous, x: event.clientX, y: event.clientY }))
+            const panel = grid.current?.closest('.pdf-image-panel')
+            if (panel) { const rect = panel.getBoundingClientRect(); if (event.clientY < rect.top + 48) panel.scrollTop -= 16; else if (event.clientY > rect.bottom - 48) panel.scrollTop += 16 }
+            const offset = (panel?.scrollTop ?? 0) - dragScroll.current
+            let nearest = dropTarget.current, distance = Infinity
+            dragSlots.current.forEach((rect, slot) => {
+              const d = Math.hypot(event.clientX - rect.left - rect.width / 2, event.clientY - rect.top - rect.height / 2 + offset)
+              if (d < distance) { distance = d; nearest = slot }
+            })
+            targetDrag(nearest)
+          }} onPointerUp={event => { endDrag(true); if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId) }} onPointerCancel={() => endDrag()} onLostPointerCapture={() => endDrag()} onContextMenu={event => event.preventDefault()}>
+            <span className="pdf-page-number">{index + 1}</span><img draggable={false} src={image.url} alt={image.file.name} style={{ transform: `rotate(${image.rotation}deg)` }} /><button className="pdf-remove" disabled={locked} aria-label={`Remove ${image.file.name}`} onClick={() => remove(image.id)}>×</button></div>
           <div className="pdf-image-info"><strong title={image.file.name}>{image.file.name}</strong><span>{image.width} × {image.height}</span></div>
           <div className="pdf-image-actions"><button disabled={locked || index === 0} aria-label={`Move ${image.file.name} earlier`} onClick={() => reorder(index, index - 1)}>←</button><button disabled={locked} aria-label={`Rotate ${image.file.name}`} onClick={() => { invalidate(); setImages(previous => previous.map(item => item.id === image.id ? { ...item, rotation: (item.rotation + 90) % 360 } : item)) }}>↻ Rotate</button><button disabled={locked || index === images.length - 1} aria-label={`Move ${image.file.name} later`} onClick={() => reorder(index, index + 1)}>→</button></div>
-        </li>)}</ol></>}
+        </li>})}</ol>{dragPreview && dragIndex !== null && <div className="pdf-drag-preview" aria-hidden="true" style={{ width: dragPreview.width, transform: `translate3d(${dragPreview.x - dragPreview.width / 2}px,${dragPreview.y - 70}px,0) rotate(3deg)` }}><img src={images[dragIndex].url} alt="" style={{ transform: `rotate(${images[dragIndex].rotation}deg)` }} /><strong>{images[dragIndex].file.name}</strong></div>}</>}
         {errors.length > 0 && <div className="pdf-errors" role="alert"><strong>Some files need attention</strong><ul>{errors.map((error, i) => <li key={i}>{error}</li>)}</ul></div>}
       </section>
       <aside className="pdf-settings" aria-label="PDF controls">
