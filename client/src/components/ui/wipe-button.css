@@ -1,0 +1,41 @@
+.wipe-button {
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  isolation:isolate;
+  min-height:48px;
+  padding:15px 25px;
+  margin:0;
+  border:0;
+  border-radius:15px;
+  background:#e8e8e8;
+  color:#212121;
+  font-family:inherit;
+  font-size:17px;
+  font-weight:1000;
+  cursor:pointer;
+  box-shadow:4px 8px 19px -3px rgba(0,0,0,.27);
+  transition:color 250ms;
+}
+.wipe-button > span { position:relative; z-index:1; }
+.wipe-button::before {
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  height:100%;
+  width:0;
+  border-radius:15px;
+  background:#212121;
+  z-index:0;
+  transition:width 250ms;
+}
+.wipe-button:is(:hover,:focus-visible):not(:disabled) { color:#e8e8e8; }
+.wipe-button:is(:hover,:focus-visible):not(:disabled)::before { width:100%; }
+.wipe-button:focus-visible { outline:3px solid #195ec0; outline-offset:4px; }
+.wipe-button:disabled { opacity:.45; cursor:not-allowed; }
+@media(prefers-reduced-motion:reduce) {
+  .wipe-button,.wipe-button::before { transition:none; }
+}

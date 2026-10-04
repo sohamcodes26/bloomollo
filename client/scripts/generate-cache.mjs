@@ -22,8 +22,10 @@ const urls = files.filter(file => /\.(?:js|css|png|jpg|jpeg|webp|avif|svg|woff2|
 await writeFile(path.join(dist, 'sw.js'), `
 const CACHE = 'bloomollo-assets-${version}';
 const ASSETS = ${JSON.stringify(urls)};
+// PDF processing is optional: cache its engine on first use, not on every visit.
+const PRECACHE = ASSETS.filter(url => !/\/pdf\.worker-/.test(url));
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(PRECACHE)));
 });
 self.addEventListener('activate', event => {
   event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('bloomollo-assets-') && key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim()));
