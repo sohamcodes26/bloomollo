@@ -1,4 +1,19 @@
 .pdf-tool { background:#f6f8fb; color:#192d45; padding:0 clamp(12px,2vw,32px) 8px; height:100dvh; min-height:420px; display:flex; flex-direction:column; color-scheme:light; }
+.pdf-guide { background:#f6f8fb; color:#192d45; padding:64px max(20px,calc((100vw - 1100px)/2)); line-height:1.8; }
+.pdf-guide nav { font-size:13px; margin-bottom:32px; color:#52657c; }
+.pdf-guide header { max-width:780px; margin-bottom:48px; }
+.pdf-guide h2 { font-size:24px; line-height:1.3; letter-spacing:-.6px; margin-bottom:18px; }
+.pdf-guide header h2 { font-size:clamp(26px,3vw,38px); }
+.pdf-guide p { margin-bottom:16px; }
+.pdf-guide a { color:#164eaa; text-decoration:underline; text-underline-offset:4px; }
+.pdf-guide-kicker { font-size:11px; letter-spacing:1.5px; font-weight:750; color:#52657c; }
+.pdf-guide-columns { display:grid; grid-template-columns:1fr 1fr; gap:48px; margin-bottom:48px; }
+.pdf-guide ol { padding-left:22px; }
+.pdf-guide li { padding-left:6px; margin-bottom:16px; }
+.pdf-guide-faq details { border-top:1px solid #d2dce8; padding:18px 0; }
+.pdf-guide-faq summary { cursor:pointer; font-weight:750; }
+.pdf-guide-faq details p { margin:14px 0 0; max-width:850px; }
+@media(max-width:700px) { .pdf-guide { padding:40px 20px; font-size:14px; } .pdf-guide-columns { grid-template-columns:1fr; gap:24px; } }
 .pdf-toolbar { display:flex; align-items:center; gap:18px; min-height:64px; flex-shrink:0; border-bottom:1px solid #d2dce8; }
 .pdf-brand { display:inline-flex; align-items:center; gap:8px; flex-shrink:0; font-size:21px; letter-spacing:-1px; font-weight:800; }
 .pdf-brand .pdf-brand-name { color:#192d45; }
