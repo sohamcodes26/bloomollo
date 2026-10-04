@@ -10,12 +10,40 @@ export default function ImageToPdfPage() {
   const [settings, setSettings] = useState<PdfSettings>(defaults)
   const [loading, setLoading] = useState(false), [busy, setBusy] = useState(false)
   const [errors, setErrors] = useState<string[]>([]), [progress, setProgress] = useState(0)
-  const [result, setResult] = useState<{ url: string; size: number; name: string } | null>(null)
   const [over, setOver] = useState(false)
   const [announcement, setAnnouncement] = useState('')
+  const [mobile, setMobile] = useState(false), [drawerOpen, setDrawerOpen] = useState(false)
+  const drawer = useRef<HTMLDivElement>(null), drawerTrigger = useRef<HTMLButtonElement>(null)
   const input = useRef<HTMLInputElement>(null), worker = useRef<Worker | null>(null)
   const urls = useRef(new Set<string>()), dragged = useRef<number | null>(null), importing = useRef(false), mounted = useRef(true)
   useEffect(() => { mounted.current = true; const pool = urls.current; return () => { mounted.current = false; worker.current?.terminate(); pool.forEach(url => URL.revokeObjectURL(url)); pool.clear() } }, [])
+  useEffect(() => {
+    const media = window.matchMedia('(max-width:700px)')
+    const update = () => { setMobile(media.matches); setDrawerOpen(false) }
+    update(); media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [])
+  useEffect(() => {
+    if (!mobile || !drawerOpen) return
+    const trigger = drawerTrigger.current
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    drawer.current?.querySelector<HTMLButtonElement>('button')?.focus({ preventScroll: true })
+    const keydown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') { event.preventDefault(); setDrawerOpen(false) }
+      if (event.key !== 'Tab') return
+      const controls = Array.from(drawer.current?.querySelectorAll<HTMLElement>('button:not(:disabled), select:not(:disabled), input:not(:disabled)') ?? [])
+      const first = controls[0], last = controls[controls.length - 1]
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus() }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus() }
+    }
+    document.addEventListener('keydown', keydown)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      document.removeEventListener('keydown', keydown)
+      trigger?.focus({ preventScroll: true })
+    }
+  }, [mobile, drawerOpen])
   useEffect(() => {
     if (!images.length && !busy) return
     const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = '' }
@@ -23,7 +51,7 @@ export default function ImageToPdfPage() {
     return () => window.removeEventListener('beforeunload', warn)
   }, [images.length, busy])
   const locked = loading || busy
-  function invalidate() { if (result) { URL.revokeObjectURL(result.url); urls.current.delete(result.url); setResult(null) } }
+  function invalidate() { setAnnouncement('') }
   async function addFiles(files: File[]) {
     if (importing.current || busy) return
     if (!files.length) return
@@ -63,7 +91,7 @@ export default function ImageToPdfPage() {
   function remove(id: string) { invalidate(); const item = images.find(image => image.id === id); if (item) { URL.revokeObjectURL(item.url); urls.current.delete(item.url) }; setImages(previous => previous.filter(image => image.id !== id)) }
   function cancel() { worker.current?.terminate(); worker.current = null; setBusy(false); setProgress(0); setAnnouncement('Conversion stopped. Your images and settings are unchanged.') }
   function convert() {
-    if (!images.length || locked) return
+    if (!images.length || locked || worker.current) return
     if (typeof Worker === 'undefined' || typeof OffscreenCanvas === 'undefined') {
       setErrors(['Local PDF conversion is unavailable in this browser. Please use a current browser with Web Workers and OffscreenCanvas support.'])
       return
@@ -76,7 +104,12 @@ export default function ImageToPdfPage() {
         if (data.type === 'progress') setProgress(data.done)
         if (data.type === 'complete') {
           const blob = new Blob([data.bytes], { type: 'application/pdf' }), url = URL.createObjectURL(blob); urls.current.add(url)
-          setResult({ url, size: blob.size, name: (settings.name.replace(/[^\p{L}\p{N} _-]/gu, '').trim().slice(0, 80) || 'bloomollo-images') + '.pdf' }); setBusy(false); task.terminate(); worker.current = null
+          const link = document.createElement('a')
+          link.href = url; link.download = (settings.name.replace(/[^\p{L}\p{N} _-]/gu, '').trim().slice(0, 80) || 'bloomollo-images') + '.pdf'
+          link.hidden = true; document.body.append(link); link.click(); link.remove()
+          const pool = urls.current
+          window.setTimeout(() => { URL.revokeObjectURL(url); pool.delete(url) }, 60_000)
+          setAnnouncement('PDF created. Download started.'); setBusy(false); task.terminate(); worker.current = null
         }
         if (data.type === 'error') { setErrors([data.message]); setBusy(false); task.terminate(); worker.current = null }
       }
@@ -104,7 +137,11 @@ export default function ImageToPdfPage() {
         {errors.length > 0 && <div className="pdf-errors" role="alert"><strong>Some files need attention</strong><ul>{errors.map((error, i) => <li key={i}>{error}</li>)}</ul></div>}
       </section>
       <aside className="pdf-settings" aria-label="PDF controls">
-        <div className="pdf-options-scroll"><details className="pdf-options"><summary>PDF settings <span aria-hidden="true">+</span></summary>
+        <button ref={drawerTrigger} className="pdf-drawer-trigger" aria-expanded={drawerOpen} aria-controls="pdf-settings-drawer" onClick={() => setDrawerOpen(true)}><span>PDF settings<small>{settings.size === 'image' ? 'Fit to image' : settings.size === 'letter' ? 'US Letter' : 'A4'} · {settings.orientation === 'auto' ? 'Automatic' : settings.orientation === 'portrait' ? 'Portrait' : 'Landscape'}</small></span><span className="pdf-drawer-open" aria-hidden="true">Open<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path className="pdf-drawer-lift" d="m8 10 4-4 4 4M12 6v9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /><path d="M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg></span></button>
+        <div className={`pdf-drawer-backdrop${drawerOpen ? ' is-open' : ''}`} aria-hidden="true" onClick={() => setDrawerOpen(false)} />
+        <div ref={drawer} id="pdf-settings-drawer" className={`pdf-options-scroll${drawerOpen ? ' is-open' : ''}`} role={mobile ? 'dialog' : undefined} aria-modal={mobile && drawerOpen ? true : undefined} aria-labelledby={mobile ? 'pdf-drawer-title' : undefined} inert={mobile && !drawerOpen ? true : undefined}>
+        <div className="pdf-drawer-heading"><div><h2 id="pdf-drawer-title">PDF settings</h2><p>Make it yours before downloading.</p></div><button aria-label="Close PDF settings" onClick={() => setDrawerOpen(false)}>×</button></div>
+        <details className="pdf-options" open={mobile ? true : undefined}><summary>PDF settings <span aria-hidden="true">+</span></summary>
         <fieldset disabled={locked}><legend className="sr-only">PDF settings</legend>
           <label>Image quality<select value={settings.quality} onChange={event => change('quality', event.target.value as PdfSettings['quality'])}><option value="high">High — more detail</option><option value="balanced">Balanced — recommended</option><option value="small">Compact — smaller file</option></select></label>
           <p className="pdf-setting-note">Images keep their proportions and are never cropped. Transparency becomes white. High quality is not lossless.</p>
@@ -116,8 +153,11 @@ export default function ImageToPdfPage() {
           <label>Page size<select value={settings.size} onChange={event => change('size', event.target.value as PdfSettings['size'])}><option value="a4">A4</option><option value="letter">US Letter</option><option value="image">Fit to image</option></select></label>
           <label>Orientation<select disabled={settings.size === 'image' || locked} value={settings.orientation} onChange={event => change('orientation', event.target.value as PdfSettings['orientation'])}><option value="auto">Automatic</option><option value="portrait">Portrait</option><option value="landscape">Landscape</option></select></label>
           <label>Margins<select value={settings.margin} onChange={event => change('margin', Number(event.target.value))}><option value="0">None</option><option value="18">Small</option><option value="36">Comfortable</option></select></label>
-        </fieldset></div>
-        <div className="pdf-export"><div className="pdf-export-summary"><span>Ready to create</span><strong>{images.length} page{images.length === 1 ? '' : 's'}</strong></div>{busy ? <><progress value={progress} max={images.length} /><p role="status">Processing {progress} of {images.length} images…</p><button className="pdf-secondary" onClick={cancel}>Cancel conversion</button></> : result ? <div className="pdf-success" role="status"><strong>Your PDF is ready</strong><p>{(result.size / 1024 / 1024).toFixed(2)} MB · Saved only when you download</p><a className="pdf-primary" href={result.url} download={result.name}>Download PDF ↓</a><button className="pdf-text-button" onClick={convert}>Create again</button></div> : <button className="pdf-primary" disabled={!images.length || locked} onClick={convert}>Download PDF <span>→</span></button>}<p className="pdf-export-note">No uploads. No watermarks. No account.</p></div>
+        </fieldset><button className="pdf-drawer-done" onClick={() => setDrawerOpen(false)}>Done <span aria-hidden="true">↓</span></button></div>
+        <div className="pdf-export"><div className="pdf-export-summary"><span>{busy ? 'Creating your PDF' : loading ? 'Reading images' : 'Ready to create'}</span><strong>{images.length} page{images.length === 1 ? '' : 's'}</strong></div>
+          <button className="pdf-primary" disabled={!images.length || locked} aria-busy={locked} onClick={convert}><span>{busy ? 'Processing…' : loading ? 'Loading images…' : 'Download PDF'}</span>{locked ? <span className="pdf-loading-circle" aria-hidden="true" /> : <svg className="pdf-download-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>}</button>
+          {busy && <><progress value={progress} max={images.length} /><p role="status">Processing {progress} of {images.length} images…</p><button className="pdf-secondary" onClick={cancel}>Cancel conversion</button></>}
+          <p className="pdf-export-note">No uploads. No watermarks. No account.</p></div>
       </aside>
     </div>
   </div>

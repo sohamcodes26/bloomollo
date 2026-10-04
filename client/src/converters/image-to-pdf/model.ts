@@ -1,6 +1,6 @@
 export interface ImageItem { id: string; file: File; url: string; width: number; height: number; rotation: number }
 export interface PdfSettings { size: 'a4' | 'letter' | 'image'; orientation: 'auto' | 'portrait' | 'landscape'; margin: number; quality: 'high' | 'balanced' | 'small'; name: string }
-export const defaults: PdfSettings = { size: 'a4', orientation: 'auto', margin: 18, quality: 'balanced', name: 'bloomollo-images' }
+export const defaults: PdfSettings = { size: 'a4', orientation: 'auto', margin: 0, quality: 'balanced', name: 'bloomollo-images' }
 export const MAX_FILES = 60
 export const MAX_BYTES = 150 * 1024 * 1024
 export const MAX_PIXELS = 40_000_000
