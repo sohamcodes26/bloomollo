@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 const origin = 'https://bloomollo.dpdns.org'
 const codes = ['en', 'hi', 'de', 'fr', 'es']
-const route = code => `${code === 'en' ? '' : '/' + code}/tools/image-to-pdf/`
+const route = code => code === 'en' ? '/image-to-pdf/' : `/${code}/tools/image-to-pdf/`
 const sitemap = await readFile(new URL('../dist/sitemap.xml', import.meta.url), 'utf8')
 const titles = new Set(), descriptions = new Set()
 const downloads = { hi: 'PDF डाउनलोड करें', de: 'PDF herunterladen', fr: 'Télécharger le PDF', es: 'Descargar PDF' }
@@ -39,7 +39,7 @@ for (const slug of ['assignment-photos-to-pdf', 'images-to-printable-pdf']) {
   const html = await readFile(new URL(`../dist${path}index.html`, import.meta.url), 'utf8')
   assert.ok(sitemap.includes(`<loc>${origin + path}</loc>`))
   assert.ok(html.includes(`<link rel="canonical" href="${origin + path}"/>`))
-  assert.match(html, /href="\/tools\/image-to-pdf\/"/)
+  assert.match(html, /href="\/image-to-pdf\/"/)
   assert.equal((html.match(/<h1\b/g) || []).length, 1)
 }
 console.log('PASS: five language versions, translated controls, FAQs, reciprocal hreflang, x-default, canonicals, schemas, language links, guides and sitemap.')

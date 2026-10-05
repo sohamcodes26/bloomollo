@@ -19,7 +19,7 @@ export default function ImageToPdfGuide({ formatPage }: { formatPage?: typeof fo
       <details><summary>Does this converter make text searchable?</summary><p>No. It creates image-based PDF pages and does not perform OCR. Text photographed inside an image does not become selectable or searchable text.</p></details>
       <details><summary>Why is an image rejected or a download not starting?</summary><p>Check the file format and size limits, and try a smaller batch or an updated browser. Damaged files and formats your browser cannot decode may be rejected. Your browser controls where the generated PDF is saved and may show a download prompt.</p></details>
     </section>
-    <nav aria-label="Image conversion formats"><h2>Choose an image format</h2><p><a href="/tools/image-to-pdf/">All images to PDF</a>{formatPages.map(page => <span key={page.slug}> · <a href={`/tools/${page.slug}/`} aria-current={formatPage?.slug === page.slug ? 'page' : undefined}>{page.label} to PDF</a></span>)}</p></nav>
+    <nav aria-label="Image conversion formats"><h2>Choose an image format</h2><p><a href="/image-to-pdf/">All images to PDF</a>{formatPages.map(page => <span key={page.slug}> · <a href={`/tools/${page.slug}/`} aria-current={formatPage?.slug === page.slug ? 'page' : undefined}>{page.label} to PDF</a></span>)}</p></nav>
     <nav aria-label="PDF task guides"><h2>Practical PDF guides</h2>{taskGuides.map(guide => <p key={guide.slug}><a href={`/guides/${guide.slug}/`}>{guide.title}</a></p>)}</nav>
   </section>
 }

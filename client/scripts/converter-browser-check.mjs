@@ -20,7 +20,7 @@ const downloads = []
 ws.addEventListener('message', event => { const data = JSON.parse(event.data); if (data.method === 'Page.downloadWillBegin') downloads.push(data.params) })
 await send('Page.setDownloadBehavior', { behavior: 'allow', downloadPath: new URL('../checks/downloads/', import.meta.url).pathname.replace(/^\/(\w:)/, '$1') })
 await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false })
-await send('Page.navigate', { url: 'http://127.0.0.1:4173/tools/image-to-pdf/' })
+await send('Page.navigate', { url: 'http://127.0.0.1:4173/image-to-pdf/' })
 await wait('!!document.querySelector("#pdf-files")'); await sleep(500)
 assert.equal(await evaluate('document.documentElement.scrollWidth <= innerWidth'), true)
 assert.equal(await evaluate('document.querySelector(".pdf-tool").getBoundingClientRect().height <= innerHeight'), true, 'desktop workspace fits viewport')

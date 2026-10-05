@@ -4,7 +4,7 @@ Each tool lives in its own folder with UI, styles, a pure model, and a worker wh
 
 ## Image to PDF
 
-- Route: `/tools/image-to-pdf/`
+- Route: `/image-to-pdf/`
 - `model.ts`: format signatures, limits, reorder helper and PDF geometry.
 - `ImageToPdfPage.tsx`: accessible controls, file import and small thumbnail generation, object URL ownership, worker lifecycle and download.
 - `pdf.worker.ts`: sequential decoding, rotation, white transparency background, quality resizing and JPEG encoding, PDF generation with pdf-lib. No uploads or remote resources.
