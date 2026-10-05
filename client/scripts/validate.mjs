@@ -27,15 +27,30 @@ assert.equal((home.match(/class="product-card"/g) || []).length, 6)
 assert.equal((home.match(/<h1\b/g) || []).length, 1)
 assert.match(home, /Browse Chrome Extensions/)
 assert.ok(!home.includes('Save the words.'))
-assert.match(home, /href="\/tools\/image-to-pdf\/"/)
-const converter = await readFile(new URL('../dist/tools/image-to-pdf/index.html', import.meta.url), 'utf8')
+assert.match(home, /href="\/image-to-pdf\/"/)
+const converter = await readFile(new URL('../dist/image-to-pdf/index.html', import.meta.url), 'utf8')
 assert.match(converter, /Image to PDF/)
 assert.match(converter, /Files stay on your device/)
 assert.match(converter, /PDF settings/)
 assert.equal((converter.match(/<h1\b/g) || []).length, 1)
+const headingText = html => html.match(/<h1\b[^>]*>(.*?)<\/h1>/s)[1].replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
+assert.equal(headingText(converter), 'Image to PDF')
+assert.match(converter, /href="\/image-to-pdf\/" lang="en" hrefLang="en" aria-current="page"/i)
+for (const [slug, label] of [['jpg', 'JPG'], ['png', 'PNG'], ['webp', 'WebP'], ['avif', 'AVIF'], ['bmp', 'BMP'], ['gif', 'GIF']]) {
+  const html = await readFile(new URL(`../dist/tools/${slug}-to-pdf/index.html`, import.meta.url), 'utf8')
+  assert.equal(headingText(html), `${label} to PDF`, `${slug}: format-specific H1`)
+  const languageNav = html.match(/<nav class="pdf-language-nav"[^>]*>(.*?)<\/nav>/s)[1]
+  assert.ok(!languageNav.includes('aria-current="page"'), `${slug}: no incorrect current-page link`)
+  assert.match(languageNav, /Image to PDF languages:/)
+  assert.ok(html.includes(`<link rel="canonical" href="https://bloomollo.dpdns.org/tools/${slug}-to-pdf/"/>`))
+}
+for (const locale of ['hi', 'de', 'fr', 'es']) {
+  const html = await readFile(new URL(`../dist/${locale}/tools/image-to-pdf/index.html`, import.meta.url), 'utf8')
+  assert.ok(html.includes(`href="/${locale}/tools/image-to-pdf/" lang="${locale}" hrefLang="${locale}" aria-current="page"`), `${locale}: correct current language`)
+}
 assert.match(converter, /legal-footer--tool/)
 assert.match(converter, /brand-trademark/)
-const canonical = 'https://bloomollo.dpdns.org/tools/image-to-pdf/'
+const canonical = 'https://bloomollo.dpdns.org/image-to-pdf/'
 assert.ok(converter.includes(`<link rel="canonical" href="${canonical}"/>`))
 assert.match(converter, /JPG to PDF Converter/)
 assert.match(converter, /How to convert JPG to PDF/)
@@ -47,6 +62,11 @@ assert.equal(toolSchema['@type'], 'WebApplication')
 assert.equal(toolSchema.offers.price, '0')
 assert.ok(!toolSchema.aggregateRating, 'No fabricated converter ratings')
 const sitemap = await readFile(new URL('../dist/sitemap.xml', import.meta.url), 'utf8')
+assert.ok(!sitemap.includes('<loc>https://bloomollo.dpdns.org/tools/image-to-pdf/</loc>'), 'Old English URL excluded from sitemap')
+const hosting = JSON.parse(await readFile(new URL('../vercel.json', import.meta.url), 'utf8'))
+for (const source of ['/tools/image-to-pdf', '/tools/image-to-pdf/']) {
+  assert.ok(hosting.redirects.some(rule => rule.source === source && rule.destination === '/image-to-pdf/' && rule.permanent === true), 'Permanent redirect for ' + source)
+}
 assert.ok(sitemap.includes(`<loc>${canonical}</loc>`))
 assert.ok(!sitemap.includes('/404/'))
 const robots = await readFile(new URL('../dist/robots.txt', import.meta.url), 'utf8')

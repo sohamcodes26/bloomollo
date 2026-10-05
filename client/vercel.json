@@ -4,6 +4,18 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/tools/image-to-pdf",
+      "destination": "/image-to-pdf/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/image-to-pdf/",
+      "destination": "/image-to-pdf/",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",

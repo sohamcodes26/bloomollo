@@ -1,6 +1,6 @@
 export const languages = { en: 'English', hi: 'हिन्दी', de: 'Deutsch', fr: 'Français', es: 'Español' } as const
 export type Locale = keyof typeof languages
-export const localePath = (locale: Locale) => `${locale === 'en' ? '' : '/' + locale}/tools/image-to-pdf/`
+export const localePath = (locale: Locale) => locale === 'en' ? '/image-to-pdf/' : `/${locale}/tools/image-to-pdf/`
 export function getLocale(path: string): Locale {
   return (Object.keys(languages) as Locale[]).find(locale => locale !== 'en' && path.replace(/\/+$/, '') === localePath(locale).replace(/\/+$/, '')) ?? 'en'
 }

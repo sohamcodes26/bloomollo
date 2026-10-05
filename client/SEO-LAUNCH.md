@@ -8,7 +8,7 @@ hosting environment variable. SITE_URL can override it for a domain migration.
 
 - dist/sitemap.xml: all public canonical routes, excluding 404.
 - dist/robots.txt: crawling allowed and sitemap location advertised.
-- dist/tools/image-to-pdf/index.html: server-rendered converter, visible guide,
+- dist/image-to-pdf/index.html: server-rendered converter, visible guide,
   unique title/description, self-canonical, social metadata and WebApplication data.
 - dist/404.html: noindex, with no canonical to the homepage.
 
@@ -42,7 +42,7 @@ PowerShell environment variables before building locally.
 1. Open https://bloomollo.dpdns.org/sitemap.xml and /robots.txt after deployment.
    Both must return the actual XML/text, not a fallback HTML page.
 2. Search Console > Sitemaps > submit sitemap.xml.
-3. URL Inspection > https://bloomollo.dpdns.org/tools/image-to-pdf/
+3. URL Inspection > https://bloomollo.dpdns.org/image-to-pdf/
 4. Test live URL, inspect rendered content and indexing permission, then Request indexing.
 5. Once indexed, check Google's selected canonical equals the converter URL.
 6. Review Page indexing, Core Web Vitals and HTTPS reports when data is available.

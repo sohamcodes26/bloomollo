@@ -29,7 +29,7 @@ const evaluate = async expression => {
 }
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 try {
-  await send('Page.navigate', { url: 'http://127.0.0.1:4173/tools/image-to-pdf/' })
+  await send('Page.navigate', { url: 'http://127.0.0.1:4173/image-to-pdf/' })
   for (let i = 0; i < 50 && !await evaluate('!!document.querySelector(".pdf-options")'); i++) await sleep(100)
   await mkdir(new URL('../checks/', import.meta.url), { recursive: true })
   for (const [width, height] of [[1366, 768], [1536, 729], [1280, 720], [1440, 900], [1280, 650]]) {
