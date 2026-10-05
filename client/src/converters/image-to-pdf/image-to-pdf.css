@@ -39,11 +39,44 @@
 .pdf-options summary span { font-size:18px; }
 .pdf-options[open] summary span { transform:rotate(45deg); }
 .pdf-options fieldset { padding-top:16px; }
+/* Short desktop viewports: reveal controls, not a second scroll-heavy page. */
+@media(min-width:701px) and (max-height:900px) {
+  .pdf-tool .pdf-settings:has(.pdf-options[open]) { padding:14px 18px; }
+  .pdf-options[open] summary { background:#f2f6fd; border-color:#b9cdeb; color:#164eaa; }
+  .pdf-options[open] summary span { display:grid; place-items:center; width:24px; height:24px; border-radius:50%; background:#e2ecfb; }
+  .pdf-settings .pdf-options[open] fieldset { padding:12px 0 0; }
+  .pdf-settings .pdf-options[open] label { margin-bottom:10px; }
+  .pdf-settings .pdf-options[open] select,.pdf-settings .pdf-options[open] .pdf-filename { margin-top:5px; padding:9px 10px; min-height:40px; }
+  .pdf-settings .pdf-options[open] .pdf-setting-note { margin:0 0 12px; line-height:1.55; font-size:11px; }
+  .pdf-settings:has(.pdf-options[open]) .pdf-sponsor { min-height:48px; margin:12px 0; flex-direction:row; flex-wrap:wrap; gap:6px 12px; padding:8px; border-radius:7px; }
+  .pdf-settings:has(.pdf-options[open]) .pdf-sponsor small { display:none; }
+  .pdf-tool .pdf-settings:has(.pdf-options[open]) .pdf-quick-settings legend { margin-bottom:8px; }
+  .pdf-tool .pdf-settings:has(.pdf-options[open]) .pdf-quick-settings label { margin-bottom:8px; }
+  .pdf-tool .pdf-settings:has(.pdf-options[open]) .pdf-quick-settings select { min-height:40px; padding:8px; margin-top:5px; }
+  .pdf-tool .pdf-settings:has(.pdf-options[open]) .pdf-export { padding-top:12px; }
+  .pdf-settings:has(.pdf-options[open]) .pdf-export-summary { margin-bottom:12px; }
+}
 .pdf-sponsor { margin:18px 0; min-height:180px; border:1px dashed #c0ccdb; background:#f8fafc; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; text-align:center; color:#52657c; }
 .pdf-sponsor > span { font-size:9px; letter-spacing:2px; font-weight:750; }
 .pdf-sponsor > div { font-size:13px; }
 .pdf-sponsor small { font-size:10px; }
+@media(min-width:701px) and (max-height:780px) {
+  /* Prioritize usable controls over the unfilled advertisement on laptops. */
+  .pdf-settings:has(.pdf-options[open]) .pdf-sponsor { display:none; }
+  .pdf-tool .pdf-settings:has(.pdf-options[open]) .pdf-quick-settings { margin-top:12px; }
+  .pdf-settings .pdf-options[open] .pdf-setting-note { font-size:10px; margin-bottom:10px; }
+}
 .pdf-tool .pdf-export { flex-shrink:0; padding-top:16px; }
+@media(min-width:701px) and (max-height:680px) {
+  .pdf-settings:has(.pdf-options[open]) .pdf-options summary { padding:8px 12px; }
+  .pdf-settings .pdf-options[open] fieldset { padding-top:8px; }
+  .pdf-settings .pdf-options[open] label { margin-bottom:6px; }
+  .pdf-tool .pdf-settings:has(.pdf-options[open]) .pdf-quick-settings { margin-top:8px; }
+  .pdf-tool .pdf-settings:has(.pdf-options[open]) .pdf-quick-settings legend { margin-bottom:6px; }
+  .pdf-tool .pdf-settings:has(.pdf-options[open]) .pdf-quick-settings label { margin-bottom:6px; }
+  .pdf-tool .pdf-settings:has(.pdf-options[open]) .pdf-export { padding-top:10px; }
+  .pdf-settings:has(.pdf-options[open]) .pdf-export-summary { margin-bottom:8px; }
+}
 .pdf-tool .pdf-drop:not(.compact) { padding:clamp(18px,5vh,48px) 16px; }
 .pdf-tool .pdf-drop h3 { margin-top:18px; }
 .pdf-tool .pdf-panel-heading { margin-bottom:16px; }
