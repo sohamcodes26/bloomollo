@@ -10,15 +10,14 @@ const website = homeSchema['@graph'].find(node => node['@type'] === 'WebSite')
 assert.equal(website.name, 'Bloomollo')
 assert.equal(website.alternateName, 'bloomollo.dpdns.org')
 assert.equal(website.url, 'https://bloomollo.dpdns.org/')
-assert.match(home, /rel="shortcut icon" href="\/favicon.ico"/)
+assert.ok(!home.includes('href="/favicon.ico"'), 'Do not reference missing ICO')
 assert.ok(!home.includes('/favicon-96.png'))
 const organization = homeSchema['@graph'].find(node => node['@type'] === 'Organization')
 assert.equal(organization.logo.url, 'https://bloomollo.dpdns.org/apple-touch-icon.png')
-for (const size of [16, 32, 64, 128, 256]) {
+for (const size of [64, 128, 256]) {
   assert.ok(home.includes(`rel="icon" type="image/png" sizes="${size}x${size}" href="/favicon-${size}x${size}.png"`))
 }
-await access(new URL('../dist/favicon.ico', import.meta.url))
-for (const [file, size] of [...[16, 32, 64, 128, 256].map(size => [`favicon-${size}x${size}.png`, size]), ['apple-touch-icon.png', 180], ['mstile-144x144.png', 144]]) {
+for (const [file, size] of [...[64, 128, 256].map(size => [`favicon-${size}x${size}.png`, size]), ['apple-touch-icon.png', 180], ['mstile-144x144.png', 144]]) {
   const bytes = await readFile(new URL(`../dist/${file}`, import.meta.url))
   assert.equal(bytes.subarray(1, 4).toString(), 'PNG')
   assert.equal(bytes.readUInt32BE(16), size)

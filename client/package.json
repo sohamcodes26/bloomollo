@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir .ssr && node scripts/prerender.mjs && node scripts/generate-cache.mjs",
-    "test": "node scripts/validate.mjs && node scripts/converter-unit-check.mjs",
+    "test": "node scripts/validate.mjs && node scripts/converter-unit-check.mjs && node scripts/format-seo-check.mjs && node scripts/international-seo-check.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },

@@ -1,6 +1,10 @@
-export default function ImageToPdfGuide() {
+import { formatPages } from './format-pages'
+import { taskGuides } from './task-guides'
+
+export default function ImageToPdfGuide({ formatPage }: { formatPage?: typeof formatPages[number] }) {
   return <section className="pdf-guide" aria-labelledby="pdf-guide-title">
-    <nav aria-label="Breadcrumb"><a href="/">Bloomollo</a><span aria-hidden="true"> / </span><span>Image to PDF</span></nav>
+    <nav aria-label="Breadcrumb"><a href="/">Bloomollo</a><span aria-hidden="true"> / </span><span>{formatPage ? `${formatPage.label} to PDF` : 'Image to PDF'}</span></nav>
+    {formatPage && <article><h2>{formatPage.heading}</h2><p>{formatPage.intro}</p><p>{formatPage.tip}</p><h3>{formatPage.question}</h3><p>{formatPage.answer}</p></article>}
     <header><p className="pdf-guide-kicker">FREE · LOCAL FILE PROCESSING</p><h2 id="pdf-guide-title">Convert images and JPG photos to PDF without uploading</h2><p>Combine assignment photos, scanned pages, receipts or screenshots into one PDF. Bloomollo converts your images in your browser: the converter does not send your image files to a server. No account, installation or watermark.</p><a href="#main-content">Go to the converter ↑</a></header>
     <div className="pdf-guide-columns">
       <article><h2>How to convert JPG to PDF</h2><ol><li><strong>Choose your images.</strong> Select JPG or JPEG photos, PNG screenshots, or other supported images from your device. You can also drop files into the converter on desktop.</li><li><strong>Set the page order.</strong> Drag previews to reorder them or use the arrow buttons. On mobile, briefly hold a preview before dragging. Rotate any sideways images.</li><li><strong>Choose your layout.</strong> Use A4, US Letter or Fit to image. Choose automatic, portrait or landscape orientation and optional margins. Margins default to None.</li><li><strong>Download your PDF.</strong> Select Download PDF once. The converter processes the images and starts the download when it finishes.</li></ol></article>
@@ -15,5 +19,7 @@ export default function ImageToPdfGuide() {
       <details><summary>Does this converter make text searchable?</summary><p>No. It creates image-based PDF pages and does not perform OCR. Text photographed inside an image does not become selectable or searchable text.</p></details>
       <details><summary>Why is an image rejected or a download not starting?</summary><p>Check the file format and size limits, and try a smaller batch or an updated browser. Damaged files and formats your browser cannot decode may be rejected. Your browser controls where the generated PDF is saved and may show a download prompt.</p></details>
     </section>
+    <nav aria-label="Image conversion formats"><h2>Choose an image format</h2><p><a href="/tools/image-to-pdf/">All images to PDF</a>{formatPages.map(page => <span key={page.slug}> · <a href={`/tools/${page.slug}/`} aria-current={formatPage?.slug === page.slug ? 'page' : undefined}>{page.label} to PDF</a></span>)}</p></nav>
+    <nav aria-label="PDF task guides"><h2>Practical PDF guides</h2>{taskGuides.map(guide => <p key={guide.slug}><a href={`/guides/${guide.slug}/`}>{guide.title}</a></p>)}</nav>
   </section>
 }
