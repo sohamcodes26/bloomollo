@@ -120,4 +120,4 @@ export const products: Product[] = [
 ]
 
 export const brand = 'Bloomollo'
-export const homeDescription = 'Six focused Chrome extensions for debugging, saving drafts, capturing pages, drawing on the web, and controlling video and audio. Explore the Bloomollo collection.'
+export const homeDescription = 'Bloomollo makes everyday tasks simpler with web utility tools, Chrome extensions and an image-to-PDF converter. Practical tools, thoughtfully built.'
