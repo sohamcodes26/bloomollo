@@ -2,6 +2,21 @@ import assert from 'node:assert/strict'
 import { readFile, access } from 'node:fs/promises'
 const slugs = ['debug2ai', 'draft-rescue', 'page-capture', 'page-ink', 'video-speed-booster', 'sound-booster']
 const home = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8')
+assert.match(home, /<title>Bloomollo - A small upgrade\. A better everyday\.<\/title>/)
+assert.match(home, /web utility tools, Chrome extensions and an image-to-PDF converter/)
+assert.ok(!home.includes('Six focused Chrome extensions'))
+const homeSchema = JSON.parse(home.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1])
+const website = homeSchema['@graph'].find(node => node['@type'] === 'WebSite')
+assert.equal(website.name, 'Bloomollo')
+assert.equal(website.alternateName, 'bloomollo.dpdns.org')
+assert.equal(website.url, 'https://bloomollo.dpdns.org/')
+assert.match(home, /rel="icon" type="image\/png" sizes="96x96" href="\/favicon-96.png"/)
+for (const [file, size] of [['favicon-96.png', 96], ['apple-touch-icon.png', 180]]) {
+  const bytes = await readFile(new URL(`../dist/${file}`, import.meta.url))
+  assert.equal(bytes.subarray(1, 4).toString(), 'PNG')
+  assert.equal(bytes.readUInt32BE(16), size)
+  assert.equal(bytes.readUInt32BE(20), size)
+}
 assert.equal((home.match(/class="product-card"/g) || []).length, 6)
 assert.equal((home.match(/<h1\b/g) || []).length, 1)
 assert.match(home, /Browse Chrome Extensions/)
