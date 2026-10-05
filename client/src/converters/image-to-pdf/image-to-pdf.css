@@ -1,3 +1,6 @@
+.pdf-language-nav { display:flex; flex-wrap:wrap; gap:4px 16px; padding:6px 0; font-size:12px; }
+.pdf-language-nav a { color:#536880; padding:4px 0; }
+.pdf-language-nav a[aria-current=page] { color:#195ec0; text-decoration:underline; text-underline-offset:4px; }
 .pdf-tool { background:#f6f8fb; color:#192d45; padding:0 clamp(12px,2vw,32px) 8px; height:100dvh; min-height:420px; display:flex; flex-direction:column; color-scheme:light; }
 .pdf-guide { background:#f6f8fb; color:#192d45; padding:64px max(20px,calc((100vw - 1100px)/2)); line-height:1.8; }
 .pdf-guide nav { font-size:13px; margin-bottom:32px; color:#52657c; }
