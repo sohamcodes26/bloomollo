@@ -175,6 +175,26 @@
 .pdf-settings label { display:block; font-size:12px; font-weight:750; margin-bottom:18px; }
 .pdf-settings select,.pdf-filename { display:flex; width:100%; margin-top:8px; padding:12px 10px; border:1px solid #bdcbdc; border-radius:7px; background:#fff; color:#203d60; font-size:12px; min-height:44px; }
 .pdf-filename input { border:0; width:100%; min-width:0; color:#203d60; background:transparent; outline-offset:1px; }
+.pdf-tool .pdf-margin-settings { grid-column:1 / -1; min-width:0; border:0; padding:0; margin:0 0 12px; }
+.pdf-tool .pdf-margin-settings legend { padding:0; margin-bottom:6px; font-size:13px; font-weight:750; }
+.pdf-margin-choices { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
+.pdf-tool .pdf-margin-choices label { position:relative; grid-column:auto; margin:0; min-width:0; }
+.pdf-margin-choices input { position:absolute; width:1px; height:1px; opacity:0; }
+.pdf-margin-choices span { display:flex; justify-content:center; align-items:center; min-height:44px; padding:8px 4px; border:1px solid #bdcbdc; border-radius:7px; background:#fff; color:#203d60; font-size:12px; cursor:pointer; }
+.pdf-margin-choices input:checked + span { border-color:#195ec0; background:#ecf3ff; color:#164eaa; box-shadow:inset 0 0 0 1px #195ec0; }
+.pdf-margin-choices input:focus-visible + span { outline:2px solid #195ec0; outline-offset:2px; }
+.pdf-margin-choices input:disabled + span { opacity:.55; cursor:not-allowed; }
+.pdf-select { min-width:0; margin-bottom:12px; align-self:start; }
+.pdf-select-label { display:block; margin-bottom:6px; font-size:13px; font-weight:750; color:#203d60; }
+.pdf-tool .pdf-select-trigger { display:flex; justify-content:space-between; align-items:center; gap:8px; width:100%; min-height:44px; padding:10px; border:1px solid #bdcbdc; border-radius:7px; background:#fff; color:#203d60; font:inherit; font-size:13px; font-weight:650; text-align:left; cursor:pointer; }
+.pdf-select-trigger > span:first-child { min-width:0; overflow-wrap:anywhere; }
+.pdf-tool .pdf-select-trigger:focus-visible { outline:2px solid #195ec0; outline-offset:2px; }
+.pdf-tool .pdf-select-trigger:disabled { opacity:.55; cursor:not-allowed; }
+/* Portaled HTML options float without shifting or being clipped by the settings drawer. */
+.pdf-select-list { position:fixed; z-index:1000; box-sizing:border-box; overflow-y:auto; overscroll-behavior:contain; padding:4px; border:1px solid #bdcbdc; border-radius:7px; background:#fff; color:#203d60; font-family:inherit; box-shadow:0 6px 18px #203d6020; }
+.pdf-select-list [role=option] { display:flex; align-items:center; justify-content:space-between; gap:6px; min-height:40px; padding:8px; border-radius:4px; font-size:13px; cursor:pointer; overflow-wrap:anywhere; }
+.pdf-select-list [role=option].is-active { background:#ecf3ff; color:#164eaa; }
+.pdf-select-list [aria-selected=true] { font-weight:750; }
 .pdf-filename span { color:#65778c; }
 .pdf-setting-note { font-size:11px; line-height:1.8; color:#536880; margin:-2px 0 20px; }
 .pdf-export { border-top:1px solid #d2dce8; padding-top:20px; }

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import WipeButton from '../../components/ui/WipeButton'
 import BrandWordmark from '../../components/BrandWordmark'
+import PdfSelect from './PdfSelect'
 import { checkImageDimensions, defaults, detectImage, MAX_BYTES, MAX_FILES, MAX_PIXELS, moveItem } from './model'
 import type { ImageItem, PdfSettings } from './model'
 import './image-to-pdf.css'
@@ -220,16 +221,15 @@ export default function ImageToPdfPage({ locale = 'en', formatLabel }: { locale?
         <div className="pdf-drawer-heading"><div><h2 id="pdf-drawer-title">{t("PDF settings")}</h2><p>{t("Make it yours before downloading.")}</p></div><button aria-label={t("Close PDF settings")} onClick={() => setDrawerOpen(false)}>×</button></div>
         <details className="pdf-options" open={mobile ? true : undefined}><summary>{t('PDF settings')} <span aria-hidden="true">+</span></summary>
         <fieldset disabled={locked}><legend className="sr-only">{t("PDF settings")}</legend>
-          <label>{t("Image quality")}<select value={settings.quality} onChange={event => change('quality', event.target.value as PdfSettings['quality'])}><option value="high">{t("High — more detail")}</option><option value="balanced">{t("Balanced — recommended")}</option><option value="small">{t("Compact — smaller file")}</option></select></label>
+           <PdfSelect label={t("Image quality")} value={settings.quality} disabled={locked} onChange={value => change('quality', value)} options={[{ value: 'high', label: t("High — more detail") }, { value: 'balanced', label: t("Balanced — recommended") }, { value: 'small', label: t("Compact — smaller file") }]} />
           <p className="pdf-setting-note">{t("Images keep their proportions and are never cropped. Transparency becomes white. High quality is not lossless.")}</p>
           <label>{t("File name")}<div className="pdf-filename"><input maxLength={80} value={settings.name} onChange={event => change('name', event.target.value)} placeholder="bloomollo-images" /><span>.pdf</span></div></label>
         </fieldset>
         </details>
-        <aside className="pdf-sponsor" aria-label={t("Sponsor advertisement space")}><span>{t("SPONSOR")}</span><div>{t("Advertisement space")}</div><small>{t("Your images are never shared.")}</small></aside>
         <fieldset className="pdf-quick-settings" disabled={locked}><legend>{t("Quick settings")}</legend>
-          <label>{t("Page size")}<select value={settings.size} onChange={event => change('size', event.target.value as PdfSettings['size'])}><option value="a4">A4</option><option value="letter">{t("US Letter")}</option><option value="image">{t("Fit to image")}</option></select></label>
-          <label>{t("Orientation")}<select disabled={settings.size === 'image' || locked} value={settings.orientation} onChange={event => change('orientation', event.target.value as PdfSettings['orientation'])}><option value="auto">{t("Automatic")}</option><option value="portrait">{t("Portrait")}</option><option value="landscape">{t("Landscape")}</option></select></label>
-          <label>{t("Margins")}<select value={settings.margin} onChange={event => change('margin', Number(event.target.value))}><option value="0">{t("None")}</option><option value="18">{t("Small")}</option><option value="36">{t("Comfortable")}</option></select></label>
+          <PdfSelect label={t("Page size")} value={settings.size} disabled={locked} onChange={value => change('size', value)} options={[{ value: 'a4', label: 'A4' }, { value: 'letter', label: t("US Letter") }, { value: 'image', label: t("Fit to image") }]} />
+          <PdfSelect label={t("Orientation")} value={settings.orientation} disabled={settings.size === 'image' || locked} onChange={value => change('orientation', value)} options={[{ value: 'auto', label: t("Automatic") }, { value: 'portrait', label: t("Portrait") }, { value: 'landscape', label: t("Landscape") }]} />
+          <fieldset className="pdf-margin-settings"><legend>{t("Margins")}</legend><div className="pdf-margin-choices">{([{ value: 0, label: 'None' }, { value: 18, label: 'Small' }, { value: 36, label: 'Comfortable' }] as const).map(option => <label key={option.value}><input type="radio" name="pdf-margin" value={option.value} checked={settings.margin === option.value} onChange={() => change('margin', option.value)} /><span>{t(option.label)}</span></label>)}</div></fieldset>
         </fieldset><button className="pdf-drawer-done" onClick={() => setDrawerOpen(false)}>{t("Done")} <span aria-hidden="true">↓</span></button></div>
         <div className="pdf-export"><div className="pdf-export-summary"><span>{busy ? t("Creating your PDF") : loading ? t("Reading images") : t("Ready to create")}</span><strong>{images.length} {t(images.length === 1 ? "page" : "pages")}</strong></div>
           <button className="pdf-primary" disabled={!images.length || locked} aria-busy={locked} onClick={convert}><span>{busy ? t("Processing…") : loading ? t("Loading images…") : t("Download PDF")}</span>{locked ? <span className="pdf-loading-circle" aria-hidden="true" /> : <svg className="pdf-download-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>}</button>
