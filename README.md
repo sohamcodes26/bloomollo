@@ -21,6 +21,14 @@ Chrome-extension product listings are also included. Listings do not imply that 
 
 ## Limits and privacy
 
+### Local document tools
+
+- `/pdf-to-jpg/`: render selected PDF pages to JPG with 72/144/216 DPI, quality choices, previews, individual downloads and ZIP export. Password-protected PDFs require the password. Limits: 50 MB input, 100 selected pages, 24 megapixels per page and 150 MB total output; device memory may impose lower limits. This renders pages, not original embedded-image extraction or OCR.
+- `/html-to-pdf/`: paste or open local HTML, review a sanitized preview and use the browser print dialog's **Save as PDF** destination. Includes paper size, orientation and margin suggestions. Scripts, remote resources, forms and embedded frames are removed or blocked. Only supported embedded raster data images are retained. Relative images and external stylesheets are not imported. Browser print settings may override the suggested layout. This is a print workflow, not an automatic PDF download.
+- `/tools/jpg-to-pdf/`: existing dedicated JPG converter; `/image-to-pdf/` remains unchanged.
+
+These tools process documents locally. PDF.js runtime resources are served from this website, not a third-party CDN. `npm ci` copies the installed PDF.js runtime resources automatically; build and development commands refresh them. Do not publish Office or PDF/A conversion claims: those conversions are deliberately outside this local-only suite.
+
 Up to 60 images, 25 MB per image, 150 MB per batch and 40 megapixels per image. Available device memory can impose lower practical limits.
 
 The output is image-based: no OCR, selectable-text generation or lossless conversion. Transparency becomes white, animated images become still images, and High quality remains compressed.

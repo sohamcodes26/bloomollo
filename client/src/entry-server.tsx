@@ -4,8 +4,9 @@ import { brand, homeDescription, products } from './data'
 import { getLocale, localizedRoutes, localeMetadata } from './converters/image-to-pdf/locales'
 import { formatPages, getFormatPage } from './converters/image-to-pdf/format-pages'
 import { taskGuides, getTaskGuide } from './converters/image-to-pdf/task-guides'
+import { localTools, getLocalTool } from './converters/local-tools/catalog'
 
-export const routes = [...taskGuides.map(guide => `/guides/${guide.slug}/`), ...localizedRoutes, '/', ...products.map(p => `/extensions/${p.slug}/`), '/tools/', '/image-to-pdf/', ...formatPages.map(page => '/tools/' + page.slug + '/'), '/privacy/', '/terms/', '/404/']
+export const routes = [...localTools.map(tool => `/${tool.slug}/`), ...taskGuides.map(guide => `/guides/${guide.slug}/`), ...localizedRoutes, '/', ...products.map(p => `/extensions/${p.slug}/`), '/tools/', '/image-to-pdf/', ...formatPages.map(page => '/tools/' + page.slug + '/'), '/privacy/', '/terms/', '/404/']
 export function render(pathname: string) {
   const locale = getLocale(pathname)
   const localized = locale === "en" ? null : localeMetadata[locale]
@@ -25,5 +26,6 @@ export function render(pathname: string) {
     browserRequirements: 'Requires a modern browser with Web Workers and OffscreenCanvas',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   } : null
-  return { html: renderToString(<App pathname={pathname} />), title: taskGuide ? `${taskGuide.title} | ${brand}` : title, description: taskGuide?.description ?? description, schema, locale }
+  const tool = getLocalTool(pathname)
+  return { html: renderToString(<App pathname={pathname} />), title: tool ? `${tool.name} — Free Local Tool | ${brand}` : taskGuide ? `${taskGuide.title} | ${brand}` : title, description: tool?.description ?? taskGuide?.description ?? description, schema, locale }
 }

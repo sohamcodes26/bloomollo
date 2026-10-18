@@ -16,6 +16,8 @@ import ImageToPdfGuide from './converters/image-to-pdf/ImageToPdfGuide'
 import { getFormatPage } from './converters/image-to-pdf/format-pages'
 import BrandWordmark from './components/BrandWordmark'
 import LegalFooter from './components/LegalFooter'
+import LocalToolPage from './converters/local-tools/LocalToolPage'
+import { getLocalTool } from './converters/local-tools/catalog'
 import './App.css'
 import './theme.css'
 
@@ -133,6 +135,8 @@ export default function App({ pathname = '/' }: { pathname?: string }) {
   const normalized = pathname.replace(/\/+$/, '') || '/'
   const product = products.find(p => normalized === `/extensions/${p.slug}`)
   const home = normalized === '/'
+  const localTool = getLocalTool(normalized)
+  if (localTool) return <LocalToolPage tool={localTool} />
   if (normalized === '/tools') return <><a href="#main-content" className="skip-link">Skip to content</a><div className="site-frame"><Header home={false} /><main id="main-content"><ToolsHub /></main><Footer /></div></>
   const taskGuide = getTaskGuide(normalized)
   if (taskGuide) return <><main id="main-content"><TaskGuide guide={taskGuide} /></main><LegalFooter variant="tool" /></>

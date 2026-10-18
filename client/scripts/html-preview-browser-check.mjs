@@ -1,0 +1,70 @@
+import assert from 'node:assert/strict'
+const targets = await (await fetch('http://127.0.0.1:9333/json')).json()
+const target = targets.find(target => target.type === 'page' && target.url.startsWith('http://127.0.0.1:4173'))
+assert.ok(target, 'Open the preview server in the debug browser first')
+const ws = new WebSocket(target.webSocketDebuggerUrl)
+await new Promise(resolve => ws.addEventListener('open', resolve, { once: true }))
+let id = 0
+const pending = new Map()
+ws.addEventListener('message', event => {
+  const data = JSON.parse(event.data)
+  if (data.id) { const job = pending.get(data.id); pending.delete(data.id); data.error ? job.reject(data.error) : job.resolve(data.result) }
+})
+const send = (method, params = {}) => new Promise((resolve, reject) => { const key = ++id; pending.set(key, { resolve, reject }); ws.send(JSON.stringify({ id: key, method, params })) })
+async function evaluate(expression) {
+  const result = await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true })
+  if (result.exceptionDetails) throw new Error(JSON.stringify(result.exceptionDetails))
+  return result.result.value
+}
+async function wait(expression) {
+  for (let i = 0; i < 100; i++) { if (await evaluate(expression)) return; await new Promise(resolve => setTimeout(resolve, 100)) }
+  throw new Error(`Timeout: ${expression}`)
+}
+const edit = (selector, value) => evaluate(`(() => {const el = document.querySelector(${JSON.stringify(selector)}); Object.getOwnPropertyDescriptor(el instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype, 'value').set.call(el, ${JSON.stringify(value)}); el.dispatchEvent(new Event('input', {bubbles:true}));})()`)
+const ready = `!!document.querySelector('.local-preview iframe') && !document.querySelector('.html-settings .local-primary').disabled`
+try {
+  await send('Page.navigate', { url: 'http://127.0.0.1:4173/html-to-pdf/' })
+  await wait(`!!document.querySelector('.html-add')`)
+  await wait(`!!Object.keys(document.querySelector('.html-add')).find(key => key.startsWith('__reactProps'))`)
+  assert.equal(await evaluate(`!!document.querySelector('iframe')`), false)
+  await evaluate(`document.querySelector('.html-add').click()`)
+  await wait(`document.querySelector('dialog').open`)
+  await evaluate(`document.querySelectorAll('.html-import-tabs button')[2].click()`)
+  await edit('#html-paste', '<h1>First document</h1>')
+  await evaluate(`document.querySelector('#html-import-form').requestSubmit()`)
+  await wait(ready)
+  assert.equal(await evaluate(`document.querySelector('iframe').contentDocument.querySelector('h1').textContent`), 'First document')
+  assert.equal(await evaluate(`Array.from(document.querySelectorAll('button')).some(b=>b.textContent==='Update preview')`), false)
+  await evaluate(`document.querySelector('.html-document-bar button').click()`)
+  await edit('#html-editor', '<h1>Live edit</h1><script>window.bad=1</script><img src="https://example.com/x.png">')
+  await wait(`document.querySelector('iframe')?.contentDocument?.querySelector('h1')?.textContent === 'Live edit' && ${ready}`)
+  assert.equal(await evaluate(`!!document.querySelector('iframe').contentDocument.querySelector('script, img[src]')`), false)
+  await evaluate(`document.querySelector('input[name=orientation][value=landscape]')?.click() || Array.from(document.querySelectorAll('input[name=orientation]'))[1].click()`)
+  await wait(`document.querySelector('iframe')?.srcdoc.includes('A4 landscape') && ${ready}`)
+  await edit('#html-editor', '')
+  await wait(`!document.querySelector('iframe') && document.querySelector('.html-settings .local-primary').disabled`)
+  await evaluate(`document.querySelector('.html-text-button').click();document.querySelector('.html-import-tabs button').click()`)
+  await evaluate(`window.originalFetch=window.fetch; window.fetch=async()=>new Response('<h1>URL import</h1><script>alert(1)</script>',{headers:{'Content-Type':'text/html'}})`)
+  await edit('#html-url', 'https://example.com/page.html')
+  await evaluate(`document.querySelector('.local-url-form').requestSubmit()`)
+  await wait(`document.querySelector('iframe')?.contentDocument?.querySelector('h1')?.textContent === 'URL import' && ${ready}`)
+  await evaluate(`document.querySelector('.html-text-button').click()`)
+  await evaluate(`window.fetch=async()=>{throw new TypeError('Failed to fetch')};document.querySelector('.local-url-form').requestSubmit()`)
+  await wait(`document.querySelector('[role=alert]')?.textContent.includes('CORS')`)
+  assert.equal(await evaluate(`document.querySelector('iframe').contentDocument.querySelector('h1').textContent`), 'URL import')
+  await evaluate(`window.fetch=window.originalFetch`)
+  await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 })
+  await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 })
+  await wait(`!document.querySelector('dialog').open`)
+  await evaluate(`document.querySelector('.html-text-button').click();document.querySelectorAll('.html-import-tabs button')[1].click()`)
+  await evaluate(`(() => { const input=document.querySelector('#html-file');const data=new DataTransfer();data.items.add(new File(['<h1>File import</h1>'],'sample.html',{type:'text/html'}));input.files=data.files;input.dispatchEvent(new Event('change',{bubbles:true})); })()`)
+  await wait(`document.querySelector('iframe')?.contentDocument?.querySelector('h1')?.textContent === 'File import' && ${ready}`)
+  await evaluate(`window.printCalls=0;document.querySelector('iframe').contentWindow.print=()=>{window.printCalls++};document.querySelector('.html-settings .local-primary').click()`)
+  assert.equal(await evaluate('window.printCalls'), 1)
+  await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true })
+  assert.equal(await evaluate('document.documentElement.scrollWidth <= innerWidth'), true)
+  await evaluate(`document.querySelector('.html-text-button').click()`)
+  assert.equal(await evaluate('document.documentElement.scrollWidth <= innerWidth'), true)
+  await evaluate(`document.querySelector('.html-close').click()`)
+  console.log('PASS: single-button entry, paste/file/URL import, modal dismissal, live editing, sanitization, layout settings, empty input, CORS failure preserves preview, print invocation and mobile overflow.')
+} finally { await send('Emulation.clearDeviceMetricsOverride'); ws.close() }
