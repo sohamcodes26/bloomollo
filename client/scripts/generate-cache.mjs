@@ -23,7 +23,7 @@ await writeFile(path.join(dist, 'sw.js'), `
 const CACHE = 'bloomollo-assets-${version}';
 const ASSETS = ${JSON.stringify(urls)};
 // PDF processing is optional: cache its engine on first use, not on every visit.
-const PRECACHE = ASSETS.filter(url => !/\/pdf\.worker-/.test(url));
+const PRECACHE = ASSETS.filter(url => !/\/pdf\.worker[.-]|\/pdf-engine-|\/pdfjs\//.test(url));
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(PRECACHE)));
 });

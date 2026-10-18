@@ -18,4 +18,10 @@ for (const slug of ['image', 'jpg', 'png', 'webp', 'avif', 'bmp', 'gif']) {
   await read(`${route}index.html`)
 }
 assert.ok(!hub.includes('A little off the path.'))
-console.log('PASS: tools hub prerendering, homepage discovery, seven converter links, canonical, robots and sitemap.')
+assert.equal((hub.match(/class="tools-card tools-tone-/g) || []).length, 9, 'all nine tools are visible before hydration')
+const filters = hub.match(/<div class="tools-filters"[^>]*>(.*?)<\/div>/)?.[1] || ''
+assert.equal((filters.match(/aria-pressed="true"/g) || []).length, 1, 'one category selected initially')
+assert.match(hub, /aria-label="Filter document tools"/)
+for (const category of ['All tools', 'Convert to PDF', 'Convert from PDF']) assert.ok(hub.includes(category))
+for (const route of ['pdf-to-jpg', 'html-to-pdf']) assert.ok(hub.includes(`href="/${route}/"`))
+console.log('PASS: tools hub prerendering, nine tool cards, category controls, converter links, canonical, robots and sitemap.')

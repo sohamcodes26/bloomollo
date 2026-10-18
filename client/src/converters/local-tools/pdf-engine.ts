@@ -1,0 +1,8 @@
+import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist'
+import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
+GlobalWorkerOptions.workerSrc = workerUrl
+export function loadPdf(data: Uint8Array, password: string) {
+  return getDocument({ data, password,
+    cMapUrl: '/pdfjs/cmaps/', cMapPacked: true, standardFontDataUrl: '/pdfjs/standard_fonts/',
+    wasmUrl: '/pdfjs/wasm/', iccUrl: '/pdfjs/iccs/' })
+}
