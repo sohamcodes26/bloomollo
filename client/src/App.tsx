@@ -18,6 +18,9 @@ import BrandWordmark from './components/BrandWordmark'
 import LegalFooter from './components/LegalFooter'
 import LocalToolPage from './converters/local-tools/LocalToolPage'
 import { getLocalTool } from './converters/local-tools/catalog'
+import PdfToolsMenu from './components/PdfToolsMenu'
+import PdfToolPage from './converters/pdf-tools/PdfToolPage'
+import { getPdfTool } from './converters/pdf-tools/catalog'
 import './App.css'
 import './theme.css'
 
@@ -61,7 +64,7 @@ function Header({ home }: { home: boolean }) {
   return <header className="site-header">
     <a className="brand" href="/" aria-label={`${brand} home`}><Mark /><BrandWordmark /></a>
     <nav className="desktop-nav" aria-label="Main navigation"><a href={home ? '#extensions' : '/#extensions'}>The collection <span>06</span></a><a href={home ? '#philosophy' : '/#philosophy'}>Our approach</a><a href={home ? '#faq' : '/#faq'}>Questions</a></nav>
-    <ThemeToggle />
+    <PdfToolsMenu /><ThemeToggle />
     <a href={home ? '#extensions' : '/#extensions'} className="button nav-cta">Explore extensions <span className="button-icon"><Arrow /></span></a>
     <button className="menu-toggle" aria-expanded={open} aria-controls="mobile-menu" onClick={() => setOpen(!open)} aria-label={open ? 'Close navigation' : 'Open navigation'}><span /><span className={open ? 'open' : ''} /></button>
     <nav id="mobile-menu" aria-label="Mobile navigation" className={`mobile-nav ${open ? 'expanded' : ''}`} inert={!open}><a onClick={() => setOpen(false)} href="/#extensions">The collection <Arrow /></a><a onClick={() => setOpen(false)} href="/#philosophy">Our approach <Arrow /></a><a onClick={() => setOpen(false)} href={home ? '#faq' : '/#faq'}>Questions <Arrow /></a></nav>
@@ -136,12 +139,14 @@ export default function App({ pathname = '/' }: { pathname?: string }) {
   const product = products.find(p => normalized === `/extensions/${p.slug}`)
   const home = normalized === '/'
   const localTool = getLocalTool(normalized)
+  const pdfTool = getPdfTool(normalized)
+  if (pdfTool) return <PdfToolPage tool={pdfTool} />
   if (localTool) return <LocalToolPage tool={localTool} />
   if (normalized === '/tools') return <><a href="#main-content" className="skip-link">Skip to content</a><div className="site-frame"><Header home={false} /><main id="main-content"><ToolsHub /></main><Footer /></div></>
   const taskGuide = getTaskGuide(normalized)
   if (taskGuide) return <><main id="main-content"><TaskGuide guide={taskGuide} /></main><LegalFooter variant="tool" /></>
   const formatPage = getFormatPage(normalized)
   const locale = getLocale(normalized), t = translator(locale)
-  if (normalized === '/image-to-pdf' || formatPage || localizedRoutes.some(route => route.replace(/\/+$/, '') === normalized)) return <><a href="#main-content" className="skip-link">{t("Skip to content")}</a><main id="main-content"><ImageToPdfPage locale={locale} formatLabel={formatPage?.label} />{locale === "en" ? <ImageToPdfGuide formatPage={formatPage} /> : <LocalizedGuide locale={locale} />}</main><LegalFooter variant="tool" locale={locale} /></>
+  if (normalized === '/scan-to-pdf' || normalized === '/image-to-pdf' || formatPage || localizedRoutes.some(route => route.replace(/\/+$/, '') === normalized)) return <><a href="#main-content" className="skip-link">{t("Skip to content")}</a><main id="main-content"><ImageToPdfPage locale={locale} formatLabel={normalized === '/scan-to-pdf' ? 'Scan' : formatPage?.label} />{locale === "en" ? <ImageToPdfGuide formatPage={formatPage} /> : <LocalizedGuide locale={locale} />}</main><LegalFooter variant="tool" locale={locale} /></>
   return <><a href="#main-content" className="skip-link">Skip to content</a><div className="site-frame"><Header home={home} /><main id="main-content">{home ? <Home /> : product ? <ProductPage product={product} /> : normalized === '/privacy' ? <PrivacyPage /> : normalized === '/terms' ? <TermsPage /> : <section className="not-found section-space"><span className="eyebrow">404 — NOT IN THE COLLECTION</span><h1>A little off the path.</h1><p>That page isn’t here. The collection is just one click away.</p><a className="button light" href="/">Back to the collection <Arrow /></a></section>}</main><Footer /></div></>
 }

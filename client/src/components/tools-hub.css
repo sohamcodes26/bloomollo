@@ -1,3 +1,4 @@
+.tools-filters{flex-wrap:wrap}.tools-toolbar{flex-wrap:wrap;gap:16px}
 ﻿.tools-hub{--hub-bg:#11151a;--hub-card:#1b2129;--hub-ink:#f2f5fa;--hub-muted:#b3becd;--hub-border:#3c4857;--hub-blue:#8fb8ff;background:var(--hub-bg);color:var(--hub-ink);padding:26px 4.6% 64px}
 [data-theme="light"] .tools-hub{--hub-bg:#f1f4f9;--hub-card:#fff;--hub-ink:#172338;--hub-muted:#536176;--hub-border:#ccd4e0;--hub-blue:#004fce}
 .tools-shell{max-width:1420px;margin:0 auto}

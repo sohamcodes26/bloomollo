@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { formatPages } from '../converters/image-to-pdf/format-pages'
 import { localTools } from '../converters/local-tools/catalog'
 import './tools-hub.css'
+import { pdfTools } from '../converters/pdf-tools/catalog'
 
-const categories = ['All tools', 'Convert to PDF', 'Convert from PDF'] as const
+const categories = ['All tools', 'Organize PDF', 'Optimize PDF', 'Convert to PDF', 'Convert from PDF', 'Edit PDF', 'PDF Security', 'PDF Intelligence'] as const
 const descriptions: Record<string, string> = {
   JPG: 'Turn photos, receipts and scanned pages into one neatly arranged PDF.',
   PNG: 'Combine screenshots and graphics into a PDF that’s easy to share.',
@@ -13,6 +14,8 @@ const descriptions: Record<string, string> = {
   GIF: 'Save GIF graphics as still PDF pages. Animation is not preserved.',
 }
 const tools = [
+  ...pdfTools.map(tool => ({ href: `/${tool.slug}/`, name: tool.name, from: 'PDF', to: tool.slug === 'pdf-to-markdown' ? 'MD' : 'PDF', kind: 'document', category: tool.group, description: tool.description, note: 'Local processing · No account', tone: tool.group === 'Organize PDF' ? 'coral' : tool.group === 'Edit PDF' ? 'violet' : 'blue' })),
+  { href: '/scan-to-pdf/', name: 'Scan to PDF', from: 'IMG', to: 'PDF', kind: 'image', category: 'Organize PDF', description: 'Combine photos of scanned pages. Arrange, rotate and save a PDF. No OCR or edge detection.', note: 'Images · Mobile photo capture', tone: 'coral' },
   { href: '/image-to-pdf/', name: 'Image to PDF', from: 'IMG', to: 'PDF', kind: 'image', category: 'Convert to PDF', description: 'Mix photos, screenshots and scans. Arrange your images and download one PDF.', note: 'Mixed image formats', tone: 'blue' },
   { href: '/tools/jpg-to-pdf/', name: 'JPG to PDF', from: 'JPG', to: 'PDF', kind: 'image', category: 'Convert to PDF', description: descriptions.JPG, note: 'JPG & JPEG supported', tone: 'amber' },
   ...localTools.map(tool => ({ href: `/${tool.slug}/`, name: tool.name, from: tool.from, to: tool.to, kind: tool.from === 'HTML' ? 'code' : 'document', category: tool.from === 'PDF' ? 'Convert from PDF' : 'Convert to PDF', description: tool.from === 'PDF' ? 'Export PDF pages as JPG images. Choose your pages and download individually or as a ZIP.' : 'Preview local HTML, then use your browser’s Print / Save as PDF dialog.', note: tool.from === 'PDF' ? 'Page selection · ZIP download' : 'Browser print workflow', tone: tool.from === 'PDF' ? 'coral' : 'green' })),
