@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { PDFDocumentProxy } from 'pdfjs-dist'
 import BrandWordmark from '../../components/BrandWordmark'
 import LegalFooter from '../../components/LegalFooter'
@@ -29,7 +29,7 @@ export default function PdfToolPage({ tool }: { tool: PdfTool }) {
   const multiple = ['merge-pdf', 'organize-pdf', 'compare-pdf'].includes(tool.slug)
   const selected = pages.filter(page => page.selected)
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; cancelled.current = true; docs.current.forEach(doc => { void doc.loadingTask.destroy() }); URL.revokeObjectURL(resultUrl.current) } }, [])
-  function invalidate() { if (resultUrl.current) URL.revokeObjectURL(resultUrl.current); resultUrl.current = ''; setResult(null) }
+  const invalidate = useCallback(() => { if (resultUrl.current) URL.revokeObjectURL(resultUrl.current); resultUrl.current = ''; setResult(null) }, [])
   function change<K extends keyof Settings>(key: K, value: Settings[K]) { setSettings(current => ({ ...current, [key]: value })); invalidate() }
   async function addFiles(files: FileList | File[]) {
     if (!files.length || busy) return
@@ -115,6 +115,24 @@ export default function PdfToolPage({ tool }: { tool: PdfTool }) {
     } catch (cause) { setError(cause instanceof Error ? cause.message : 'Could not export. Try a smaller file.'); setStatus('') }
     finally { if (mounted.current) setBusy(false) }
   }
+  const togglePage = useCallback((pageId: string) => {
+    setPages(current => current.map(page => page.id === pageId ? { ...page, selected: !page.selected } : page))
+    invalidate()
+  }, [invalidate])
+  useEffect(() => {
+    function handlePageCardClick(event: MouseEvent) {
+      const target = event.target
+      if (!(target instanceof Element)) return
+      const card = target.closest('.pdf-toolbox .tool-page')
+      if (!card || target.closest('label, button, input, select, textarea, a, [role="button"]')) return
+      const cards = Array.from(document.querySelectorAll('.pdf-toolbox .tool-page'))
+      const page = pages[cards.indexOf(card)]
+      if (!page || busy) return
+      togglePage(page.id)
+    }
+    document.addEventListener('click', handlePageCardClick)
+    return () => document.removeEventListener('click', handlePageCardClick)
+  }, [pages, busy, togglePage])
   function numeric(key: keyof Settings, label: string, min: number, max: number, step = 1) {
     return <label>{label}<input type="number" min={min} max={max} step={step} value={settings[key] as number} onChange={event => { const value = event.target.valueAsNumber; if (Number.isFinite(value)) { setSettings(current => ({ ...current, [key]: Math.max(min, Math.min(max, value)) })); setResult(null) } }} /></label>
   }

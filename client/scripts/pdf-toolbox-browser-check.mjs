@@ -35,6 +35,10 @@ try {
   assert.equal(await evaluate(`document.querySelectorAll('.pdf-menu-group').length`), 7)
   await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', windowsVirtualKeyCode: 27 });await wait(`document.querySelector('.pdf-mega').hidden`)
   await upload(fixture, 2);assert.equal((await exportPdf()).getPageCount(), 6)
+  await navigate('extract-pages');await upload();await evaluate(`document.querySelectorAll('.tool-page')[1].querySelector('.tool-thumbnail').click()`)
+  await wait(`document.querySelector('.tool-settings .tool-selection>span').textContent==='2 selected'`)
+  await evaluate(`document.querySelectorAll('.tool-page')[1].querySelector('.tool-thumbnail').click()`)
+  await wait(`document.querySelector('.tool-settings .tool-selection>span').textContent==='3 selected'`)
   for (const [slug, expected] of [['extract-pages', 1], ['remove-pages', 2]]) {
     await navigate(slug);await upload();await evaluate(`document.querySelectorAll('.tool-page-check input')[1].click();document.querySelectorAll('.tool-page-check input')[2].click()`)
     assert.equal((await exportPdf()).getPageCount(), expected)
