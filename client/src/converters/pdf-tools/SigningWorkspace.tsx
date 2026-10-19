@@ -54,16 +54,24 @@ export default function SigningWorkspace({ pages, doc, name, busy, signature, pl
   useEffect(() => {
     const root = stage.current
     if (!root) return
-    const visible = new Map<string, number>()
-    const observer = new IntersectionObserver(entries => {
-      for (const entry of entries) visible.set((entry.target as HTMLElement).dataset.pageId!, entry.isIntersecting ? entry.intersectionRect.height : 0)
+    let frame = 0
+    function updateActive() {
+      frame = 0
+      const bounds = root!.getBoundingClientRect()
       let best = '', height = 0
-      for (const [id, value] of visible) if (value > height) { best = id; height = value }
+      sheets.current.forEach((node, id) => {
+        const rect = node.getBoundingClientRect()
+        const value = Math.max(0, Math.min(rect.bottom, bounds.bottom) - Math.max(rect.top, bounds.top))
+        if (value > height) { best = id; height = value }
+      })
       const index = pages.findIndex(item => item.id === best)
       if (index >= 0) setActive(index)
-    }, { root, threshold: [0, .1, .25, .5, .75, 1] })
+    }
+    function schedule() { if (!frame) frame = requestAnimationFrame(updateActive) }
+    const observer = new IntersectionObserver(schedule, { root, threshold: [0, .1, .25, .5, .75, 1] })
     sheets.current.forEach(node => observer.observe(node))
-    return () => observer.disconnect()
+    root.addEventListener('scroll', schedule, { passive: true })
+    return () => { observer.disconnect(); root.removeEventListener('scroll', schedule); cancelAnimationFrame(frame) }
   }, [pages])
   async function acceptSignature(bytes: Uint8Array) {
     const version = ++importVersion.current

@@ -1,0 +1,49 @@
+/* Document workspaces share the signing tool's full-browser proportions. */
+.local-tool.pdf-toolbox.is-editing{padding:0;min-height:100dvh;background:#e9edf2}
+.is-editing>.local-toolbar{min-height:68px;padding:0 28px;background:#fff;gap:24px}
+.is-editing>.local-breadcrumb{display:none}
+.is-editing>.local-intro{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);padding:0}
+.is-editing .tool-workspace{grid-template-columns:minmax(0,1fr) clamp(300px,26vw,400px);gap:0;height:calc(100dvh - 68px);min-height:480px;align-items:stretch}
+.is-editing .tool-pages{border-radius:0;padding:0;display:flex;flex-direction:column;min-height:0;background:#e9edf2}
+.is-editing .tool-pages-bar{border-radius:0;padding:12px 22px;min-height:60px;flex-shrink:0;border-bottom:1px solid #bccbda;box-sizing:border-box}
+.is-editing .tool-selection{padding:10px 22px;flex-shrink:0}
+.is-editing .tool-settings.local-panel{position:static;overflow-y:auto;overscroll-behavior:contain;border-radius:0;box-shadow:none;border-left:1px solid #bccbda;min-height:0;padding:26px 24px}
+.is-editing .tool-settings h2{font-size:23px;margin-top:0}
+.is-editing .tool-settings .local-primary{min-height:56px}
+.workspace-sidebar-controls{margin:0 0 22px;padding:0 0 20px;box-shadow:0 1px 0 #d8e2ec}
+.workspace-sidebar-controls:empty{display:none}
+.is-editing .workspace-sidebar-controls .tool-selection{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0;margin:0 0 18px}
+.workspace-sidebar-controls .tool-selection>span{grid-column:1/-1;margin:0 0 4px;font-weight:600;color:#243e55}
+.workspace-sidebar-controls .tool-selection button{background:#edf3f8;box-shadow:inset 0 0 0 1px #c4d3e0;min-height:38px}
+.workspace-sidebar-controls .visual-toolbar{display:flex;flex-direction:column;align-items:stretch;gap:10px;padding:0;background:transparent}
+.local-tool .workspace-sidebar-controls .visual-toolbar label{display:flex;justify-content:space-between;margin:0}
+.workspace-sidebar-controls .visual-toolbar select{width:auto;min-width:130px;margin:0;padding:9px 12px}
+.workspace-sidebar-controls .visual-toolbar>span{display:block;font-size:11px;line-height:1.6;order:2}
+.is-editing .tool-grid-scroll{overflow:auto;flex:1;min-height:0;overscroll-behavior:contain}
+.is-editing .tool-page-grid:not(.visual-page-list){grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:22px;padding:16px 24px 32px}
+.visual-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 22px;background:#f7f9fc;color:#29455e;font-size:12px}
+.local-tool .visual-toolbar label{display:flex;align-items:center;gap:10px;margin:0;font-size:12px}
+.visual-toolbar select{padding:7px;background:#fff;color:#153c5b;border:1px solid #8ea6bb;border-radius:5px;font:inherit}
+.visual-page-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding:24px clamp(16px,4vw,64px) 40px}
+.tool-page-grid.visual-page-list{display:flex;flex-direction:column;gap:18px;padding:0;margin:0 auto;box-sizing:border-box}
+.visual-page-list .tool-page{padding:0;background:transparent;box-shadow:none;border-radius:0;flex-shrink:0}
+.visual-page-list .tool-page.is-selected{box-shadow:none}
+.visual-page-list .tool-page-check{font-size:12px;color:#263e54;margin:0 0 10px}
+.visual-page-list .tool-page>small{margin:8px 0 0;color:#314e66}
+.visual-page-list .tool-page-actions:empty{display:none}
+.visual-sheet{position:relative;background:#fff;box-shadow:0 3px 16px #233e571c;isolation:isolate}
+.visual-sheet>img{display:block;width:100%;height:100%;pointer-events:none;user-select:none}
+.visual-handle{position:absolute;outline:1px dashed #176baf;cursor:move;touch-action:none;user-select:none;min-height:12px;box-sizing:border-box}
+.visual-handle:hover,.visual-handle:focus-visible{outline:2px solid #176baf;background:#1777bd0a}
+.visual-handle[aria-disabled=true]{cursor:wait}
+.visual-placeholder{display:block;background:#fff;color:#174b75;font:12px/1.5 Manrope,sans-serif;padding:4px;white-space:nowrap}
+.visual-redaction,.visual-redaction:hover,.visual-redaction:focus-visible{background:#000}
+.visual-resize{position:absolute;right:-10px;bottom:-10px;width:26px;height:26px;background:#fff;color:#174b75;border:1px solid #176baf;border-radius:4px;cursor:nwse-resize;touch-action:none;font-size:18px}
+.visual-sheet .tool-crop{overflow:hidden;max-width:100%;max-height:100%}
+.is-editing .tool-compare{flex:1;min-height:0;padding:18px;gap:18px}
+.is-editing .tool-compare>section{max-height:none;border-radius:0;overscroll-behavior:contain}
+.is-editing .tool-compare h2{position:sticky;top:-12px;padding:12px 0;margin:0;background:#fff}
+.is-editing>.tool-result,.is-editing>.tool-boundaries,.is-editing>p:not(:empty){margin:24px}
+.is-editing>p:empty{margin:0}
+@media(max-width:900px){.is-editing .tool-workspace{grid-template-columns:minmax(0,1fr) 290px}.is-editing .tool-settings.local-panel{padding:22px 18px}.is-editing>.local-toolbar>span{display:none}.visual-page-scroll{padding:20px 16px}.visual-toolbar>span{display:none}}
+@media(max-width:680px){.is-editing>.local-toolbar{padding:0 16px;min-height:64px;gap:14px}.is-editing .tool-workspace{display:flex;flex-direction:column;height:auto;min-height:0}.is-editing .tool-pages{height:calc(100dvh - 64px);min-height:480px}.is-editing .tool-settings.local-panel{overflow:visible;border-left:0;border-top:1px solid #bccbda;padding:24px 20px}.is-editing .tool-pages-bar{padding:10px 14px;flex-wrap:wrap;font-size:12px}.is-editing .tool-selection{padding:10px 14px}.is-editing .tool-page-grid:not(.visual-page-list){grid-template-columns:repeat(auto-fill,minmax(130px,1fr));padding:14px;gap:16px}.is-editing .tool-compare{padding:8px;gap:8px}.visual-toolbar{padding:8px 14px}}
