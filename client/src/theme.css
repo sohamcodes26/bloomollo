@@ -44,8 +44,8 @@
 [data-theme="light"] .pdf-utilities-heading p{color:#555d6b}
 [data-theme="light"] .pdf-utilities-heading .button.light{background:var(--accent);border-color:var(--accent);color:#fff}
 [data-theme="light"] .pdf-utilities-heading .button.light:hover{background:#0048c6}
-[data-theme="light"] .pdf-tool-card{background:#fff;border-color:#e4e8ef}
-[data-theme="light"] .pdf-tool-card:hover{background:#fbfcff;border-color:#cbd8ea}
+[data-theme="light"] .pdf-tool-card{background:linear-gradient(135deg,rgba(var(--tile-rgb),.14),rgba(var(--tile-rgb),.05)),#fff;border-color:rgba(var(--tile-rgb),.25)}
+[data-theme="light"] .pdf-tool-card:hover{background:linear-gradient(135deg,rgba(var(--tile-rgb),.22),rgba(var(--tile-rgb),.08)),#fff;border-color:rgba(var(--tile-rgb),.5)}
 [data-theme="light"] .pdf-tool-card-top{color:#536176}
 [data-theme="light"] .pdf-tool-card-top>span:last-child{color:#7b8798}
 [data-theme="light"] .pdf-tool-card h3{color:#172338}
