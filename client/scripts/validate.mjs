@@ -3,7 +3,7 @@ import { readFile, access } from 'node:fs/promises'
 const slugs = ['debug2ai', 'draft-rescue', 'page-capture', 'page-ink', 'video-speed-booster', 'sound-booster']
 const home = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8')
 assert.match(home, /<title>Bloomollo - A small upgrade\. A better everyday\.<\/title>/)
-assert.match(home, /web utility tools, Chrome extensions and an image-to-PDF converter/)
+assert.match(home, /free PDF tools first, with local document utilities/)
 assert.ok(!home.includes('Six focused Chrome extensions'))
 const homeSchema = JSON.parse(home.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1])
 const website = homeSchema['@graph'].find(node => node['@type'] === 'WebSite')
@@ -26,6 +26,8 @@ for (const [file, size] of [...[64, 128, 256].map(size => [`favicon-${size}x${si
 assert.equal((home.match(/class="product-card"/g) || []).length, 6)
 assert.equal((home.match(/<h1\b/g) || []).length, 1)
 assert.match(home, /Browse Chrome Extensions/)
+assert.ok(home.indexOf('id="pdf-tools"') < home.indexOf('id="extensions"'), 'PDF tools appear before Chrome extensions on the homepage')
+assert.match(home, /The useful tools/)
 assert.ok(!home.includes('Save the words.'))
 assert.match(home, /href="\/image-to-pdf\/"/)
 const converter = await readFile(new URL('../dist/image-to-pdf/index.html', import.meta.url), 'utf8')

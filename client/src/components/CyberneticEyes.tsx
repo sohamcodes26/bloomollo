@@ -30,13 +30,15 @@ export default function CyberneticEyes() {
       const artwork = canvas.parentElement
       const hero = artwork?.closest('.hero-inner')
       const headline = hero?.querySelector('h1 span')
-      if (artwork && hero instanceof HTMLElement && headline) {
+      const tagline = hero?.querySelector('p')
+      if (artwork && hero instanceof HTMLElement && headline && tagline) {
         const textBounds = headline.getBoundingClientRect()
+        const taglineBounds = tagline.getBoundingClientRect()
         const heroBounds = hero.getBoundingClientRect()
         // Follow the actual headline width, not a viewport-size approximation.
         // Absolute positioning keeps the artwork out of the content flow.
         artwork.style.width = `${textBounds.width}px`
-        artwork.style.top = `${textBounds.bottom - heroBounds.top + 8}px`
+        artwork.style.top = `${taglineBounds.bottom - heroBounds.top + 24}px`
         // Reserve a deliberate CTA gap independently of the absolute artwork.
         // Scale that clearance with the headline instead of fixed breakpoints.
         hero.style.setProperty('--eyes-height', `${textBounds.width * 360 / 1220}px`)
@@ -49,6 +51,8 @@ export default function CyberneticEyes() {
     observer.observe(canvas)
     const headline = canvas.closest('.hero-inner')?.querySelector('h1')
     if (headline) observer.observe(headline)
+    const tagline = canvas.closest('.hero-inner')?.querySelector('p')
+    if (tagline) observer.observe(tagline)
     window.addEventListener('mousemove', onMove, { passive: true })
     window.addEventListener('scroll', updateBounds, { passive: true })
     window.addEventListener('resize', updateBounds, { passive: true })
