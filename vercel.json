@@ -1,0 +1,12 @@
+{
+  "$schema": "https://vercel.sh",
+  "cleanUrls": true,
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "destination": "https://bloomollo.tech",
+      "permanent": true
+    }
+  ]
+}

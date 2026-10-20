@@ -1,1 +1,0 @@
-export const productionOrigin = 'https://bloomollo.tech'
