@@ -1,3 +1,4 @@
+
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
@@ -7,19 +8,23 @@
   "redirects": [
     {
       "source": "/tools/image-to-pdf/:path*",
-      "has": [{ "type": "host", "value": "bloomollo.dpdns.org" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "bloomollo.dpdns.org"
+        }
+      ],
       "destination": "https://bloomollo.tech/image-to-pdf/:path*",
       "permanent": true
     },
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "bloomollo.dpdns.org" }],
-      "destination": "https://bloomollo.tech/:path*",
-      "permanent": true
-    },
-    {
-      "source": "/:path*",
-      "has": [{ "type": "host", "value": "www.bloomollo.tech" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "bloomollo.dpdns.org"
+        }
+      ],
       "destination": "https://bloomollo.tech/:path*",
       "permanent": true
     },
