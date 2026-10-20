@@ -35,18 +35,18 @@
 }
 /* Headline-sized background art. Crop + feathering remove the rectangular frame;
    screen blending drops the inverted paper while retaining luminous eye detail. */
-.cybernetic-eyes{position:absolute;left:50%;top:346px;transform:translateX(-50%);width:min(650px,88%);aspect-ratio:1220/360;pointer-events:none;z-index:0;mix-blend-mode:screen;mask-image:radial-gradient(ellipse 50% 49% at 50% 50%,#000 45%,rgba(0,0,0,.92) 65%,transparent 100%)}
+.cybernetic-eyes{position:absolute;left:50%;top:378px;transform:translateX(-50%);width:min(650px,88%);aspect-ratio:1220/360;pointer-events:none;z-index:0;mix-blend-mode:screen;mask-image:radial-gradient(ellipse 50% 49% at 50% 50%,#000 45%,rgba(0,0,0,.92) 65%,transparent 100%)}
 .cybernetic-eyes canvas{display:block;width:100%;height:100%;filter:invert(1) hue-rotate(180deg);opacity:.86}
 .cybernetic-eyes canvas:not([data-ready="true"]){visibility:hidden}
 .hero-inner>.reveal{position:relative;z-index:1}
 .hero-actions{margin-top:calc(var(--eyes-height,192px) + 44px)}
-@media(max-width:767px){.cybernetic-eyes{top:228px;max-width:calc(100% - 32px)}.hero-actions{margin-top:calc(var(--eyes-height,100px) + 40px)}}
+@media(max-width:767px){.cybernetic-eyes{top:260px;max-width:calc(100% - 32px)}.hero-actions{margin-top:calc(var(--eyes-height,100px) + 40px)}}
 /* Align hero-link destinations to their content, not the padded section edge.
    Account for the existing 110px document scroll padding without changing layout. */
-#extensions,#philosophy{scroll-margin-top:-192px}
-@media(max-width:767px){#extensions,#philosophy{scroll-margin-top:-158px}}
+#pdf-tools,#extensions,#philosophy{scroll-margin-top:-192px}
+@media(max-width:767px){#pdf-tools,#extensions,#philosophy{scroll-margin-top:-158px}}
 /* Hero atmosphere: pointer-accessible floor with a lingering light trail. */
-.hero-inner{min-height:805px;pointer-events:none;padding-top:85px}
+.hero-inner{min-height:805px;pointer-events:none;padding-top:61px}
 .hero-inner a{pointer-events:auto}
 .hero-bottom{bottom:30px}
 .hero-dots{pointer-events:none;opacity:.35;mask-image:radial-gradient(ellipse at 0 0,#000,transparent 55%),radial-gradient(ellipse at 100% 0,#000,transparent 55%)}
@@ -69,3 +69,11 @@
 @media(max-width:1100px){.hero-inner{min-height:780px}.hero-bottom{bottom:30px}}
 @media(max-width:767px){.hero-inner{min-height:715px;padding-top:65px}.hero-bottom{bottom:24px}.interactive-floor{top:430px;bottom:auto;grid-template-columns:repeat(24,minmax(0,1fr))}.corner-glare{width:50%;height:250px}.large-asterisk .brand-mark{width:78px;height:78px}.closing-star .brand-mark{width:200px;height:200px}}
 @media(prefers-reduced-motion:reduce){.will-reveal{opacity:1;transform:none}.waveform i{animation:none}.glare-spark{opacity:.25}.glare-bloom{opacity:.5}}
+.pdf-utilities{position:relative;overflow:hidden;border-top:1px solid var(--line);background:#0e110c;color:#efefe9}
+.pdf-utilities::before{content:'';position:absolute;inset:0;background-image:linear-gradient(90deg,#dbe4c60a 1px,transparent 1px),linear-gradient(#dbe4c60a 1px,transparent 1px);background-size:52px 52px;mask-image:linear-gradient(120deg,#000,transparent 75%);pointer-events:none}
+.pdf-utilities>*{position:relative;z-index:1}
+.pdf-utilities .section-kicker{color:#b4b9a9}.pdf-utilities .section-kicker>span:last-child{color:#6e7665}
+.pdf-utilities-heading{display:flex;align-items:end;justify-content:space-between;gap:40px;margin:30px 0 42px}.pdf-utilities-heading h2{font-size:clamp(38px,4.4vw,68px);color:#efefe9}.pdf-utilities-heading h2 span{color:#8a9280}.pdf-utilities-heading p{max-width:430px;margin-top:19px;color:#a6aa9e;font-size:13px;line-height:1.8}.pdf-utilities-heading .button.light{background:#e9eddc;color:#161912;border-color:#e9eddc}.pdf-utilities-heading .button.light:hover{background:#f5f7ee}
+.pdf-tool-grid{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:14px}.pdf-tool-card-wrap{min-width:0}.pdf-tool-card{display:flex;min-height:198px;height:100%;flex-direction:column;padding:22px 23px 17px;border:1px solid #dbe4c612;border-radius:15px;background:#151a11;transition:transform .35s var(--motion),background .35s var(--motion),border-color .35s var(--motion)}.pdf-tool-card-wrap:first-child{grid-row:span 2;min-height:410px}.pdf-tool-card:hover{transform:translateY(-5px);background:#1b2316;border-color:#dbe4c64d}.pdf-tool-card-top{display:flex;align-items:center;justify-content:space-between;color:#aabd90;font-size:10px;letter-spacing:1.5px}.pdf-tool-card-top>span:last-child{color:#77846a}.pdf-tool-mark{display:grid;place-items:center;width:46px;height:46px;border-radius:12px;background:#aabd902b;color:#d2dec2;font-size:24px}.pdf-tool-tone-coral .pdf-tool-mark{background:#ffac972b;color:#ffb9a4}.pdf-tool-tone-amber .pdf-tool-mark{background:#f4c3762b;color:#f7d494}.pdf-tool-tone-green .pdf-tool-mark{background:#8fdbb82b;color:#a9e5c5}.pdf-tool-tone-violet .pdf-tool-mark{background:#c9afff2b;color:#d8c5ff}.pdf-tool-card h3{margin-top:auto;color:#d8e2c8;font-size:24px;font-weight:550;letter-spacing:-.7px}.pdf-tool-card p{max-width:31ch;margin:8px 0 23px;color:#9ca58f;font-size:12px;line-height:1.65}.pdf-tool-card-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding-top:13px;color:#819071;font-size:10px}.pdf-tool-arrow{display:grid;place-items:center;width:29px;height:29px;border-radius:50%;background:#242c1b;color:#ccd9b5;font-size:16px;transition:transform .35s var(--motion)}.pdf-tool-card:hover .pdf-tool-arrow{transform:rotate(45deg)}
+@media(max-width:767px){.pdf-utilities-heading{display:block;margin:23px 0 28px}.pdf-utilities-heading p{font-size:12px}.pdf-utilities-heading .button{margin-top:22px}.pdf-tool-grid{grid-template-columns:1fr 1fr;gap:10px}.pdf-tool-card-wrap:first-child{grid-column:1/-1;grid-row:auto;min-height:260px}.pdf-tool-card{min-height:180px;padding:17px 16px 13px}.pdf-tool-card h3{font-size:19px}.pdf-tool-card p{font-size:11px;margin-bottom:17px}.pdf-tool-card-bottom{font-size:9px}.pdf-tool-mark{width:38px;height:38px;font-size:20px}}
+@media(prefers-reduced-motion:reduce){.pdf-tool-card,.pdf-tool-arrow{transition:none}.pdf-tool-card:hover{transform:none}}
