@@ -8,12 +8,12 @@ assert.ok(!home.includes('Six focused Chrome extensions'))
 const homeSchema = JSON.parse(home.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1])
 const website = homeSchema['@graph'].find(node => node['@type'] === 'WebSite')
 assert.equal(website.name, 'Bloomollo')
-assert.equal(website.alternateName, 'bloomollo.dpdns.org')
-assert.equal(website.url, 'https://bloomollo.dpdns.org/')
+assert.equal(website.alternateName, 'bloomollo.tech')
+assert.equal(website.url, 'https://bloomollo.tech/')
 assert.ok(!home.includes('href="/favicon.ico"'), 'Do not reference missing ICO')
 assert.ok(!home.includes('/favicon-96.png'))
 const organization = homeSchema['@graph'].find(node => node['@type'] === 'Organization')
-assert.equal(organization.logo.url, 'https://bloomollo.dpdns.org/apple-touch-icon.png')
+assert.equal(organization.logo.url, 'https://bloomollo.tech/apple-touch-icon.png')
 for (const size of [64, 128, 256]) {
   assert.ok(home.includes(`rel="icon" type="image/png" sizes="${size}x${size}" href="/favicon-${size}x${size}.png"`))
 }
@@ -42,7 +42,7 @@ for (const [slug, label] of [['jpg', 'JPG'], ['png', 'PNG'], ['webp', 'WebP'], [
   const languageNav = html.match(/<nav class="pdf-language-nav"[^>]*>(.*?)<\/nav>/s)[1]
   assert.ok(!languageNav.includes('aria-current="page"'), `${slug}: no incorrect current-page link`)
   assert.match(languageNav, /Image to PDF languages:/)
-  assert.ok(html.includes(`<link rel="canonical" href="https://bloomollo.dpdns.org/tools/${slug}-to-pdf/"/>`))
+  assert.ok(html.includes(`<link rel="canonical" href="https://bloomollo.tech/tools/${slug}-to-pdf/"/>`))
 }
 for (const locale of ['hi', 'de', 'fr', 'es']) {
   const html = await readFile(new URL(`../dist/${locale}/tools/image-to-pdf/index.html`, import.meta.url), 'utf8')
@@ -50,7 +50,7 @@ for (const locale of ['hi', 'de', 'fr', 'es']) {
 }
 assert.match(converter, /legal-footer--tool/)
 assert.match(converter, /brand-trademark/)
-const canonical = 'https://bloomollo.dpdns.org/image-to-pdf/'
+const canonical = 'https://bloomollo.tech/image-to-pdf/'
 assert.ok(converter.includes(`<link rel="canonical" href="${canonical}"/>`))
 assert.match(converter, /JPG to PDF Converter/)
 assert.match(converter, /How to convert JPG to PDF/)
@@ -62,7 +62,7 @@ assert.equal(toolSchema['@type'], 'WebApplication')
 assert.equal(toolSchema.offers.price, '0')
 assert.ok(!toolSchema.aggregateRating, 'No fabricated converter ratings')
 const sitemap = await readFile(new URL('../dist/sitemap.xml', import.meta.url), 'utf8')
-assert.ok(!sitemap.includes('<loc>https://bloomollo.dpdns.org/tools/image-to-pdf/</loc>'), 'Old English URL excluded from sitemap')
+assert.ok(!sitemap.includes('<loc>https://bloomollo.tech/tools/image-to-pdf/</loc>'), 'Old English URL excluded from sitemap')
 const hosting = JSON.parse(await readFile(new URL('../vercel.json', import.meta.url), 'utf8'))
 for (const source of ['/tools/image-to-pdf', '/tools/image-to-pdf/']) {
   assert.ok(hosting.redirects.some(rule => rule.source === source && rule.destination === '/image-to-pdf/' && rule.permanent === true), 'Permanent redirect for ' + source)
@@ -70,7 +70,7 @@ for (const source of ['/tools/image-to-pdf', '/tools/image-to-pdf/']) {
 assert.ok(sitemap.includes(`<loc>${canonical}</loc>`))
 assert.ok(!sitemap.includes('/404/'))
 const robots = await readFile(new URL('../dist/robots.txt', import.meta.url), 'utf8')
-assert.match(robots, /Sitemap: https:\/\/bloomollo\.dpdns\.org\/sitemap\.xml/)
+assert.match(robots, /Sitemap: https:\/\/bloomollo\.tech\/sitemap\.xml/)
 const notFound = await readFile(new URL('../dist/404.html', import.meta.url), 'utf8')
 assert.match(notFound, /name="robots" content="noindex"/)
 assert.ok(!notFound.includes('rel="canonical"'))

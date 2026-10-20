@@ -9,6 +9,7 @@ const escape = value => value.replaceAll('&', '&amp;').replaceAll('"', '&quot;')
 const origin = new URL(process.env.SITE_URL || productionOrigin)
 if (!['http:', 'https:'].includes(origin.protocol) || origin.pathname !== '/' || origin.search || origin.hash || origin.username || origin.password) throw new Error('SITE_URL must be an http(s) origin without a path or credentials')
 const siteUrl = origin.origin
+if (siteUrl !== productionOrigin) throw new Error(`SITE_URL must be ${productionOrigin}; update the deployment environment to avoid publishing SEO for an outdated domain`)
 const verification = process.env.GOOGLE_SITE_VERIFICATION?.trim()
 const verificationFile = process.env.GOOGLE_SITE_VERIFICATION_FILE?.trim()
 if (verificationFile && !/^google[a-zA-Z0-9_-]+\.html$/.test(verificationFile)) throw new Error('GOOGLE_SITE_VERIFICATION_FILE must be the exact googleTOKEN.html filename from Search Console')
@@ -16,10 +17,10 @@ for (const route of routes) {
   const { html, title, description, schema: pageSchema, locale } = render(route)
   const schema = route === '/' ? {
     '@context': 'https://schema.org', '@graph': [
-      { '@type': 'WebSite', '@id': siteUrl + '/#website', name: 'Bloomollo', alternateName: 'bloomollo.dpdns.org', url: siteUrl + '/', description, publisher: { '@id': siteUrl + '/#organization' } },
+      { '@type': 'WebSite', '@id': siteUrl + '/#website', name: 'Bloomollo', alternateName: 'bloomollo.tech', url: siteUrl + '/', description, publisher: { '@id': siteUrl + '/#organization' } },
       { '@type': 'Organization', '@id': siteUrl + '/#organization', name: 'Bloomollo', url: siteUrl + '/', logo: { '@type': 'ImageObject', url: siteUrl + '/apple-touch-icon.png', width: 180, height: 180 } },
     ],
-  } : pageSchema ? { ...pageSchema, ...(pageSchema['@type'] === 'WebApplication' ? { url: siteUrl + route, '@id': siteUrl + route + '#application', publisher: { '@type': 'Organization', name: 'Bloomollo', url: siteUrl + '/' }, featureList: ['Combine images into one PDF', 'Local file processing', 'Reorder and rotate images', 'A4, US Letter and fit-to-image pages', 'No watermark or account'], isAccessibleForFree: true } : {}) } : null
+  } : pageSchema ? { ...pageSchema, ...(pageSchema['@type'] === 'WebApplication' ? { url: siteUrl + route, '@id': siteUrl + route + '#application', publisher: { '@type': 'Organization', name: 'Bloomollo', url: siteUrl + '/' }, ...(route === '/image-to-pdf/' || route.startsWith('/tools/') || /^\/(hi|de|fr|es)\/tools\//.test(route) ? { featureList: ['Combine images into one PDF', 'Local file processing', 'Reorder and rotate images', 'A4, US Letter and fit-to-image pages', 'No watermark or account'] } : {}), isAccessibleForFree: true } : {}) } : null
   const canonical = siteUrl && route !== '/404/' ? `<link rel="canonical" href="${escape(siteUrl + route)}"/><meta property="og:url" content="${escape(siteUrl + route)}"/>` : ''
   const metadata = `<meta name="description" content="${escape(description)}"/><meta property="og:title" content="${escape(title)}"/><meta property="og:description" content="${escape(description)}"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="${escape(title)}"/><meta name="twitter:description" content="${escape(description)}"/>${canonical}${route === '/404/' ? '<meta name="robots" content="noindex"/>' : ''}${schema ? `<script type="application/ld+json">${JSON.stringify(schema).replaceAll('<', '\\u003c')}</script>` : ''}`
   const extra = `<meta property="og:site_name" content="Bloomollo"/>${route !== '/404/' ? '<meta name="robots" content="index,follow,max-image-preview:large"/>' : ''}${verification ? `<meta name="google-site-verification" content="${escape(verification)}"/>` : ''}`

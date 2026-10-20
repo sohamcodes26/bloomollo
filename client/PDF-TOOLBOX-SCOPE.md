@@ -18,7 +18,7 @@ Branch: `feature/pdf-toolbox`. All processing is local; no server or new depende
 | PDF to JPG | Existing resolution, quality, page range and ZIP workflow retained. |
 | Rotate PDF | Individual pages or selected-page rotation in 90-degree steps. |
 | Add page numbers | Bottom-center sequential numbering with font size and starting number. |
-| Add watermark | Text, position, size, opacity, selected pages. |
+| Add watermark | Text or PNG/JPEG image, font formatting, color, 3×3 positioning, mosaic repeat, transparency, rotation, page range and over/under layer controls. Downloads the watermarked PDF directly. |
 | Crop PDF | Uniform edge inset; crop box only, not secure removal. |
 | Edit PDF | Explicitly labeled Add text to PDF: overlays only; no existing-content editing. |
 | PDF Forms | Existing AcroForm text, checkbox, dropdown, option list (single selection), radio fields; optional flattening. No XFA or form creation. |

@@ -6,7 +6,7 @@ const titles = new Set(), descriptions = new Set()
 for (const format of slugs) {
   const route = `/tools/${format}-to-pdf/`
   const html = await readFile(new URL(`../dist${route}index.html`, import.meta.url), 'utf8')
-  const url = `https://bloomollo.dpdns.org${route}`
+  const url = `https://bloomollo.tech${route}`
   assert.ok(html.includes(`<link rel="canonical" href="${url}"`))
   assert.ok(sitemap.includes(`<loc>${url}</loc>`))
   assert.equal((html.match(/<h1\b/g) || []).length, 1)

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
-const origin = 'https://bloomollo.dpdns.org'
+const origin = 'https://bloomollo.tech'
 const codes = ['en', 'hi', 'de', 'fr', 'es']
 const route = code => code === 'en' ? '/image-to-pdf/' : `/${code}/tools/image-to-pdf/`
 const sitemap = await readFile(new URL('../dist/sitemap.xml', import.meta.url), 'utf8')

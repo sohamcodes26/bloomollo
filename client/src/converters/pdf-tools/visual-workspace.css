@@ -36,6 +36,9 @@
 .visual-handle{position:absolute;outline:1px dashed #176baf;cursor:move;touch-action:none;user-select:none;min-height:12px;box-sizing:border-box}
 .visual-handle:hover,.visual-handle:focus-visible{outline:2px solid #176baf;background:#1777bd0a}
 .visual-handle[aria-disabled=true]{cursor:wait}
+.visual-watermark{display:grid;place-items:center;overflow:visible;border:1px dashed #b52c2c;background:#ef2b2b18;transform-origin:center;white-space:nowrap}
+.visual-watermark-text{display:block;max-width:100%;overflow:hidden;color:#b52c2c;font-size:clamp(10px,2vw,24px);font-weight:600;line-height:1.15;text-overflow:ellipsis}
+.visual-watermark-image{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}
 .visual-placeholder{display:block;background:#fff;color:#174b75;font:12px/1.5 Manrope,sans-serif;padding:4px;white-space:nowrap}
 .visual-redaction,.visual-redaction:hover,.visual-redaction:focus-visible{background:#000}
 .visual-resize{position:absolute;right:-10px;bottom:-10px;width:26px;height:26px;background:#fff;color:#174b75;border:1px solid #176baf;border-radius:4px;cursor:nwse-resize;touch-action:none;font-size:18px}

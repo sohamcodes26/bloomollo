@@ -7,7 +7,7 @@ export const pdfTools = [
   { slug: 'compress-pdf', name: 'Compress PDF', group: 'Optimize PDF', mark: '↓', description: 'Create an image-based PDF at a lower resolution. Size reduction is not guaranteed; searchable text is lost.' },
   { slug: 'rotate-pdf', name: 'Rotate PDF', group: 'Edit PDF', mark: '↻', description: 'Rotate selected PDF pages in 90-degree steps and download a new copy.' },
   { slug: 'page-numbers', name: 'Add page numbers', group: 'Edit PDF', mark: '#', description: 'Add sequential page numbers to the bottom of selected PDF pages.' },
-  { slug: 'watermark-pdf', name: 'Add watermark', group: 'Edit PDF', mark: 'W', description: 'Add a translucent text watermark to selected PDF pages.' },
+  { slug: 'watermark-pdf', name: 'Add watermark', group: 'Edit PDF', mark: 'W', description: 'Add text or image watermarks with formatting, positioning, transparency, rotation and page-range controls.' },
   { slug: 'crop-pdf', name: 'Crop PDF', group: 'Edit PDF', mark: '⌗', description: 'Trim page edges using a crop box. Hidden content is not deleted; do not use cropping to redact.' },
   { slug: 'edit-pdf', name: 'Add text to PDF', group: 'Edit PDF', mark: 'T', description: 'Place new text on selected pages. This does not edit or replace existing text.' },
   { slug: 'pdf-forms', name: 'PDF Forms', group: 'Edit PDF', mark: '☑', description: 'Fill supported existing PDF form fields, then save or flatten the completed form.' },

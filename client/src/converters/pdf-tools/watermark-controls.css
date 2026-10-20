@@ -1,0 +1,38 @@
+.watermark-controls{display:grid;gap:16px;margin:4px 0 20px;padding-bottom:20px;border-bottom:1px solid #ccdbe7;color:#183b57}
+.watermark-controls label{display:grid;gap:7px;margin:0;font-size:12px;font-weight:600}
+.watermark-controls textarea,.watermark-controls select,.watermark-controls input[type=number]{width:100%;margin:0;padding:10px 11px;border:1px solid #9fb4c5;border-radius:5px;background:#fff;color:#183b57;font:inherit;font-weight:400;box-sizing:border-box}
+.watermark-controls textarea{resize:vertical;min-height:58px}
+.watermark-tabs{display:grid;grid-template-columns:1fr 1fr;margin:-26px -24px 0;border-bottom:1px solid #c9d6e0}
+.watermark-tabs button{display:grid;place-items:center;gap:5px;min-height:82px;border:0;border-bottom:2px solid transparent;background:#f3f6f9;color:#697e90;cursor:pointer}
+.watermark-tabs button+button{border-left:1px solid #c9d6e0}
+.watermark-tabs button.active{border-bottom-color:#176baf;background:#fff;color:#176baf}
+.watermark-tabs strong{font-size:26px;line-height:1;font-weight:500}
+.watermark-tabs span{font-size:11px}
+.watermark-control-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.watermark-format-row{display:flex;align-items:center;gap:7px}
+.watermark-format-row>button{width:34px;height:34px;border:1px solid #b1c4d2;border-radius:4px;background:#edf3f8;color:#174b75;cursor:pointer}
+.watermark-format-row>button[aria-pressed=true]{background:#174b75;color:#fff}
+.watermark-format-row label{display:flex;align-items:center;grid-template-columns:auto auto;gap:8px;margin-left:auto}
+.watermark-format-row input[type=color]{width:36px;height:34px;padding:3px;margin:0;cursor:pointer}
+.watermark-controls fieldset{border:0;padding:0;margin:0;min-width:0}
+.watermark-controls legend{padding:0;margin:0 0 9px;font-size:12px;font-weight:600}
+.watermark-position-grid{display:grid;grid-template-columns:repeat(3,34px);gap:4px;width:max-content;padding:7px;border:1px solid #9fb4c5;border-radius:4px;background:#fff}
+.watermark-position-grid button{position:relative;width:34px;height:34px;border:0;background:linear-gradient(90deg,transparent 48%,#bdcbd6 49%,#bdcbd6 51%,transparent 52%),linear-gradient(0deg,transparent 48%,#bdcbd6 49%,#bdcbd6 51%,transparent 52%);cursor:pointer}
+.watermark-position-grid button span{position:absolute;inset:10px;border-radius:2px;background:#a9b9c5}
+.watermark-position-grid button.active span{background:#176baf;box-shadow:0 0 0 2px #176baf33}
+.watermark-checkbox{display:flex!important;align-items:center;grid-template-columns:none!important;gap:8px!important;margin:11px 0 0!important;font-weight:400!important}
+.watermark-checkbox input{width:17px;height:17px;margin:0;accent-color:#176baf}
+.watermark-pages{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:8px}
+.watermark-pages>span{padding-bottom:11px;color:#60768a;font-size:12px}
+.watermark-image-picker{display:grid;gap:8px}
+.watermark-image-button{display:grid;place-items:center;gap:8px;min-height:128px;padding:12px;border:1px dashed #8ea9bb;border-radius:6px;background:#f3f7fa;color:#176baf;cursor:pointer}
+.watermark-image-button strong{font-size:28px;font-weight:400}
+.watermark-image-button img{display:block;max-width:100%;max-height:100px;object-fit:contain}
+.watermark-image-button span{font-size:11px}
+.watermark-file-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#516b80;font-size:11px}
+.watermark-layer{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.watermark-layer button{display:grid;place-items:center;gap:6px;min-height:85px;padding:9px;border:1px solid transparent;border-radius:6px;background:#edf1f5;color:#6a7886;cursor:pointer;text-align:center}
+.watermark-layer button.active{border-color:#176baf;background:#e8f3fa;color:#176baf;box-shadow:inset 0 0 0 1px #176baf}
+.watermark-layer strong{font-size:24px;line-height:1}
+.watermark-layer span{font-size:10px;line-height:1.35}
+@media(max-width:900px){.watermark-tabs{margin:-22px -18px 0}}

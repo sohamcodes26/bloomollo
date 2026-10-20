@@ -37,7 +37,7 @@ try {
 console.log('PASS: HTML URL imports, credential omission, URL validation, HTTP errors, content types and streamed size limits.')
 for (const slug of ['pdf-to-jpg', 'html-to-pdf']) {
   const html = await readFile(new URL(`../dist/${slug}/index.html`, import.meta.url), 'utf8')
-  assert.match(html, new RegExp(`rel="canonical" href="https://bloomollo.dpdns.org/${slug}/"`))
+  assert.match(html, new RegExp(`rel="canonical" href="https://bloomollo.tech/${slug}/"`))
   assert.equal((html.match(/<h1\b/g) || []).length, 1)
   assert.ok(!html.includes('A little off the path.'))
   const sitemap = await readFile(new URL('../dist/sitemap.xml', import.meta.url), 'utf8')

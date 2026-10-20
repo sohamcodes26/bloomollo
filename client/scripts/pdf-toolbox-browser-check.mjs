@@ -23,9 +23,9 @@ async function upload(base64 = fixture, count = 1) {
   await wait(`(document.querySelectorAll('.tool-page, .text-page').length===${count * 3} || document.querySelectorAll('.sign-thumbnails button').length===${count * 3}) && !document.querySelector('#tool-pdf-input').disabled`)
 }
 async function exportPdf() {
-  await evaluate(`[...document.querySelectorAll('.tool-settings .local-primary')].at(-1).click()`)
-  await wait(`!!document.querySelector('.tool-result iframe')`)
-  const base64 = await evaluate(`(async()=>{const bytes=new Uint8Array(await(await fetch(document.querySelector('.tool-result iframe').src)).arrayBuffer());let s='';for(const b of bytes)s+=String.fromCharCode(b);return btoa(s)})()`)
+  await evaluate(`window.downloadedPdf=null;HTMLAnchorElement.prototype.click=function(){window.downloadedPdf=this.href};[...document.querySelectorAll('.tool-settings .local-primary')].at(-1).click()`)
+  await wait(`!!document.querySelector('.tool-result iframe') || !!window.downloadedPdf`)
+  const base64 = await evaluate(`(async()=>{const url=document.querySelector('.tool-result iframe')?.src||window.downloadedPdf;const bytes=new Uint8Array(await(await fetch(url)).arrayBuffer());let s='';for(const b of bytes)s+=String.fromCharCode(b);return btoa(s)})()`)
   return PDFDocument.load(Buffer.from(base64, 'base64'))
 }
 try {
@@ -34,7 +34,10 @@ try {
   assert.equal(await evaluate(`document.querySelector('.pdf-mega').hidden`), false)
   assert.equal(await evaluate(`document.querySelectorAll('.pdf-menu-group').length`), 7)
   await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', windowsVirtualKeyCode: 27 });await wait(`document.querySelector('.pdf-mega').hidden`)
-  await upload(fixture, 2);assert.equal((await exportPdf()).getPageCount(), 6)
+  await upload(fixture, 2);assert.equal(await evaluate(`document.querySelectorAll('.merge-file-card').length`), 2)
+  await evaluate(`(() => {const cards=document.querySelectorAll('.merge-file-card'),transfer=new DataTransfer();transfer.setData('text/plain','0');cards[1].dispatchEvent(new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer:transfer}));})()`)
+  await wait(`document.querySelector('.merge-file-card strong').textContent==='sample-1.pdf'`)
+  assert.equal((await exportPdf()).getPageCount(), 6)
   await navigate('extract-pages');await upload();await evaluate(`document.querySelectorAll('.tool-page')[1].querySelector('.tool-thumbnail').click()`)
   await wait(`document.querySelector('.tool-settings .tool-selection>span').textContent==='2 selected'`)
   await evaluate(`document.querySelectorAll('.tool-page')[1].querySelector('.tool-thumbnail').click()`)
@@ -47,21 +50,25 @@ try {
   assert.equal((await exportPdf()).getPage(0).getRotation().angle, 90)
   for (const slug of ['page-numbers', 'watermark-pdf', 'crop-pdf', 'compress-pdf', 'redact-pdf']) {
     await navigate(slug);await upload()
-    if (slug === 'watermark-pdf' || slug === 'edit-pdf') await edit('.tool-settings textarea', 'REVIEW')
+    if (slug === 'watermark-pdf' || slug === 'edit-pdf') await edit('.tool-settings textarea', slug === 'watermark-pdf' ? 'CONFIDENTIAL\nLine 2\n4' : 'REVIEW')
     assert.equal(await evaluate(`Math.abs(document.querySelector('.tool-workspace').getBoundingClientRect().width-document.documentElement.clientWidth)<2`),true,'Loaded workspace fills browser width')
     assert.equal(await evaluate(`document.querySelectorAll('.visual-sheet').length`),3,'All pages available in continuous preview')
     assert.equal(await evaluate(`!document.querySelector('.tool-pages .tool-selection, .tool-pages .visual-toolbar')`),true,'No selection or zoom rows above document')
-    assert.equal(await evaluate(`!!document.querySelector('.tool-settings .tool-selection') && !!document.querySelector('.tool-settings [aria-label="Document zoom"]')`),true,'Selection and zoom are in right sidebar')
-    await evaluate(`document.querySelectorAll('.tool-settings .tool-selection button')[1].click()`)
-    await wait(`document.querySelector('.tool-settings .tool-selection>span').textContent==='0 selected'`)
-    await evaluate(`document.querySelector('.tool-settings .tool-selection button').click()`)
-    await wait(`document.querySelector('.tool-settings .tool-selection>span').textContent==='3 selected'`)
+     if (slug === 'watermark-pdf') {
+       assert.equal(await evaluate(`!!document.querySelector('.watermark-controls') && !!document.querySelector('[aria-label="Watermark type"]')`),true,'Watermark controls are available')
+     } else {
+       assert.equal(await evaluate(`!!document.querySelector('.tool-settings .tool-selection') && !!document.querySelector('.tool-settings [aria-label="Document zoom"]')`),true,'Selection and zoom are in right sidebar')
+       await evaluate(`document.querySelectorAll('.tool-settings .tool-selection button')[1].click()`)
+       await wait(`document.querySelector('.tool-settings .tool-selection>span').textContent==='0 selected'`)
+       await evaluate(`document.querySelector('.tool-settings .tool-selection button').click()`)
+       await wait(`document.querySelector('.tool-settings .tool-selection>span').textContent==='3 selected'`)
+     }
     await evaluate(`(() => {const el=document.querySelector('[aria-label="Document zoom"]');el.value='125';el.dispatchEvent(new Event('change',{bubbles:true}));})()`)
     await wait(`document.querySelector('.visual-page-list').style.width==='125%'`)
     await evaluate(`(() => {const el=document.querySelector('[aria-label="Document zoom"]');el.value='100';el.dispatchEvent(new Event('change',{bubbles:true}));})()`)
     await wait(`document.querySelector('.visual-page-list').style.width==='100%'`)
     await wait(`document.querySelector('.visual-sheet').getAttribute('aria-busy')==='false'`)
-    if (['edit-pdf','watermark-pdf','redact-pdf','page-numbers'].includes(slug)) {
+    if (['edit-pdf','redact-pdf','page-numbers'].includes(slug)) {
       const before=await evaluate(`(() => {const m=document.querySelector('.visual-handle');m.scrollIntoView({block:'center'});const r=m.getBoundingClientRect();return {x:r.x+5,y:r.y+5,left:parseFloat(m.style.left),top:parseFloat(m.style.top)}})()`)
       await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:before.x,y:before.y})
       await send('Input.dispatchMouseEvent',{type:'mousePressed',x:before.x,y:before.y,button:'left',clickCount:1})
@@ -88,7 +95,22 @@ try {
       await writeFile(new URL(`file:///${process.env.TEMP.replaceAll('\\','/')}/bloomollo-visual-workspace.png`),Buffer.from(screenshot.data,'base64'))
     }
 
-    const result = await exportPdf();assert.equal(result.getPageCount(), 3)
+     if (slug === 'watermark-pdf') {
+       await evaluate(`document.querySelector('.tool-settings .local-primary').click()`)
+       await wait(`document.querySelector('[role="status"]').textContent.includes('Watermarked PDF download started')`)
+       continue
+     }
+     const result = await exportPdf();assert.equal(result.getPageCount(), 3)
+    if (slug === 'watermark-pdf') {
+      const contents=result.getPage(0).node.Contents()
+      const commands=Array.from({length:contents.size()},(_,i)=>Buffer.from(decodePDFRawStream(result.context.lookup(contents.get(i))).decode()).toString()).join('\n')
+      assert.ok(commands.includes(Buffer.from('CONFIDENTIAL').toString('hex').toUpperCase()) && commands.includes(Buffer.from('Line 2').toString('hex').toUpperCase()),'Downloaded PDF includes both watermark lines')
+      assert.equal(await evaluate(`document.querySelectorAll('.visual-watermark-text,.visual-watermark-image').length`),0,'No fake HTML watermark duplicates the actual PDF preview')
+      assert.equal(await evaluate(`document.querySelectorAll('.tool-pages .local-error').length`),0,'Multiline watermark preview has no WinAnsi error')
+      const identical=await evaluate(`(async()=>{const mod=await import([...performance.getEntriesByType('resource')].find(e=>/pdf-engine-.*\\.js/.test(e.name)).name);const data=new Uint8Array(await(await fetch(window.downloadedPdf)).arrayBuffer());const task=mod.loadPdf(data,'');const doc=await task.promise;try{const page=await doc.getPage(1),base=page.getViewport({scale:1}),viewport=page.getViewport({scale:Math.min(1600/base.width,2)}),canvas=document.createElement('canvas');canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);await page.render({canvas,viewport,background:'#fff'}).promise;return canvas.toDataURL('image/png')===document.querySelector('.visual-sheet>img').src}finally{await task.destroy()}})()`)
+      assert.equal(identical,true,'Downloaded watermark page renders pixel-identically to the live preview')
+    }
+
     if (slug === 'crop-pdf') assert.equal(result.getPage(0).getCropBox().width, 252)
     if (slug === 'redact-pdf') {
       const text = await evaluate(`(async()=>{const mod=await import([...performance.getEntriesByType('resource')].find(e=>/pdf-engine-.*\\.js/.test(e.name)).name);const data=new Uint8Array(await(await fetch(document.querySelector('.tool-result iframe').src)).arrayBuffer());const task=mod.loadPdf(data,'');const doc=await task.promise;const content=await(await doc.getPage(1)).getTextContent();await task.destroy();return content.items.length})()`)

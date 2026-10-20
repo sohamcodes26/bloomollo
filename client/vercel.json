@@ -6,6 +6,24 @@
   "trailingSlash": true,
   "redirects": [
     {
+      "source": "/tools/image-to-pdf/:path*",
+      "has": [{ "type": "host", "value": "bloomollo.dpdns.org" }],
+      "destination": "https://bloomollo.tech/image-to-pdf/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "bloomollo.dpdns.org" }],
+      "destination": "https://bloomollo.tech/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.bloomollo.tech" }],
+      "destination": "https://bloomollo.tech/:path*",
+      "permanent": true
+    },
+    {
       "source": "/tools/image-to-pdf",
       "destination": "/image-to-pdf/",
       "permanent": true

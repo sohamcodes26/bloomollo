@@ -4,8 +4,8 @@
 
 Bloomollo is a browser-utility website with a local-processing image-to-PDF converter. This repository contains the React website, converter, translations, practical guides and static rendering pipeline.
 
-- Website: https://bloomollo.dpdns.org/
-- Converter: https://bloomollo.dpdns.org/tools/image-to-pdf/
+- Website: https://bloomollo.tech/
+- Converter: https://bloomollo.tech/tools/image-to-pdf/
 - Repository: https://github.com/sohamcodes26/bloomollo
 
 ## Features

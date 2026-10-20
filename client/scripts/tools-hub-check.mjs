@@ -9,9 +9,9 @@ assert.match(home, /href="\/tools\/"/)
 assert.match(home, /href="\/image-to-pdf\/"/)
 assert.equal((hub.match(/<h1\b/g) || []).length, 1)
 assert.match(hub, /<title>Free PDF Tools/)
-assert.match(hub, /<link rel="canonical" href="https:\/\/bloomollo\.dpdns\.org\/tools\/"/)
+assert.match(hub, /<link rel="canonical" href="https:\/\/bloomollo\.tech\/tools\/"/)
 assert.match(hub, /name="robots" content="index,follow/)
-assert.match(sitemap, /<loc>https:\/\/bloomollo\.dpdns\.org\/tools\/<\/loc>/)
+assert.match(sitemap, /<loc>https:\/\/bloomollo\.tech\/tools\/<\/loc>/)
 for (const slug of ['image', 'jpg', 'png', 'webp', 'avif', 'bmp', 'gif']) {
   const route = slug === 'image' ? 'image-to-pdf/' : `tools/${slug}-to-pdf/`
   assert.ok(hub.includes(`href="/${route}"`), `${slug}: crawlable initial HTML link`)

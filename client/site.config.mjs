@@ -1,1 +1,1 @@
-export const productionOrigin = 'https://bloomollo.dpdns.org'
+export const productionOrigin = 'https://bloomollo.tech'

@@ -3,7 +3,7 @@
 ## What is deployed by the build
 
 Run `npm run build` and deploy `dist`. The production origin defaults to
-https://bloomollo.dpdns.org in site.config.mjs, so it does not depend on a missing
+https://bloomollo.tech in site.config.mjs, so it does not depend on a missing
 hosting environment variable. SITE_URL can override it for a domain migration.
 
 - dist/sitemap.xml: all public canonical routes, excluding 404.
@@ -18,7 +18,7 @@ No ranking, rich-result or indexing guarantee is implied.
 
 ## Verify your property
 
-1. In Search Console add a URL-prefix property: https://bloomollo.dpdns.org/
+1. In Search Console add a URL-prefix property: https://bloomollo.tech/
 2. Choose ONE verification method:
    - HTML file: download Google's exact file and put it in client/public. Rebuild
      and deploy. Alternatively set GOOGLE_SITE_VERIFICATION_FILE to the exact
@@ -26,7 +26,7 @@ No ranking, rich-result or indexing guarantee is implied.
      generates its standard Google verification content in dist.
    - HTML tag: set GOOGLE_SITE_VERIFICATION to only the token in Google's content
      attribute, in your hosting build environment. Rebuild and deploy.
-   - Domain property: use bloomollo.dpdns.org and add Google's exact TXT record
+   - Domain property: use bloomollo.tech and add Google's exact TXT record
      in DNS if your DNS provider allows it. No HTML file is required for this method.
 3. Check the deployed verification file or view-source meta tag, then Verify.
 4. Keep the verification file, token or DNS record after verification.
@@ -39,10 +39,10 @@ PowerShell environment variables before building locally.
 
 ## Submit and inspect
 
-1. Open https://bloomollo.dpdns.org/sitemap.xml and /robots.txt after deployment.
+1. Open https://bloomollo.tech/sitemap.xml and /robots.txt after deployment.
    Both must return the actual XML/text, not a fallback HTML page.
 2. Search Console > Sitemaps > submit sitemap.xml.
-3. URL Inspection > https://bloomollo.dpdns.org/image-to-pdf/
+3. URL Inspection > https://bloomollo.tech/image-to-pdf/
 4. Test live URL, inspect rendered content and indexing permission, then Request indexing.
 5. Once indexed, check Google's selected canonical equals the converter URL.
 6. Review Page indexing, Core Web Vitals and HTTPS reports when data is available.
