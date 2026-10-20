@@ -1,4 +1,3 @@
-
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
@@ -6,6 +5,17 @@
   "outputDirectory": "dist",
   "trailingSlash": true,
   "redirects": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "bloomollo.dpdns.org"
+        }
+      ],
+      "destination": "https://bloomollo.tech/",
+      "permanent": true
+    },
     {
       "source": "/tools/image-to-pdf/:path*",
       "has": [
