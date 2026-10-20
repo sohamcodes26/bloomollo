@@ -8,5 +8,11 @@
       "destination": "https://bloomollo.tech*",
       "permanent": true
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "data:text/html,<h1>Redirecting...</h1>"
+    }
   ]
 }
