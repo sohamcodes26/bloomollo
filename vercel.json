@@ -4,8 +4,8 @@
   "trailingSlash": true,
   "redirects": [
     {
-      "source": "/:path*",
-      "destination": "https://bloomollo.tech*",
+      "source": "/(.*)",
+      "destination": "https://bloomollo.tech",
       "permanent": true
     }
   ]
